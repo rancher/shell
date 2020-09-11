@@ -5,7 +5,7 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.2/b
     chmod +x kubectl
 RUN if [ "${ARCH}" = "amd64" ]; then ARCH=x86_64; fi && \
     curl -L https://github.com/derailed/k9s/releases/download/v0.20.2/k9s_Linux_${ARCH}.tar.gz | tar xvzf -
-RUN curl -L https://get.helm.sh/helm-v3.2.4-linux-${ARCH}.tar.gz | tar xvzf - --strip-components=1
+RUN curl -L https://get.helm.sh/helm-v3.3.1-linux-${ARCH}.tar.gz | tar xvzf - --strip-components=1
 
 FROM alpine:3.12
 RUN apk add -U --no-cache bash bash-completion jq
