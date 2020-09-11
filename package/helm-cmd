@@ -1,0 +1,16 @@
+#!/bin/sh
+set -e
+
+sleep 1
+while true; do
+    if kubectl version >/dev/null 2>&1; then
+        break
+    fi
+    echo Waiting for Kubernetes API to be available
+    sleep 1
+done
+
+for i in operation*; do
+    cat $i | xargs -0 -- echo helm
+    cat $i | xargs -0 -- helm
+done
