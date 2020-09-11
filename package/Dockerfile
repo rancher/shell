@@ -1,7 +1,7 @@
 FROM alpine:3.12 AS build
 ARG ARCH=amd64
 RUN apk add -U curl xz
-RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.2/bin/linux/amd64/kubectl && \
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.2/bin/linux/${ARCH}/kubectl && \
     chmod +x kubectl
 RUN if [ "${ARCH}" = "amd64" ]; then ARCH=x86_64; fi && \
     curl -L https://github.com/derailed/k9s/releases/download/v0.20.2/k9s_Linux_${ARCH}.tar.gz | tar xvzf -
