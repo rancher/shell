@@ -6,7 +6,6 @@ source $(dirname $0)/version
 cd $(dirname $0)/..
 
 mkdir -p dist/artifacts
-cp bin/shell dist/artifacts/shell${SUFFIX}
 
 IMAGE=${REPO}/shell:${TAG}
 DOCKERFILE=package/Dockerfile
