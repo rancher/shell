@@ -3,5 +3,5 @@
 echo
 echo "# Run kubectl commands inside here"
 echo "# e.g. kubectl get all"
-#export TERM=screen-256color
+export TERM=screen-256color
 exec bash
