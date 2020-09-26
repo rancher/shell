@@ -13,4 +13,8 @@ done
 for i in operation*; do
     cat $i | xargs -0 -- echo helm
     cat $i | xargs -0 -- helm
+    echo
+    echo '---------------------------------------------------------------------'
+    cat $i | xargs -0 -- echo SUCCESS: helm
+    echo '---------------------------------------------------------------------'
 done
