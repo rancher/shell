@@ -2,11 +2,15 @@
 set -e
 
 sleep 1
-while true; do
+for i in $(seq 1 20); do
     if kubectl version >/dev/null 2>&1; then
         break
     fi
     echo Waiting for Kubernetes API to be available
+    if [ $i = 20 ]; then
+        echo Timeout waiting for kubernetes
+        exit 1
+    fi
     sleep 1
 done
 
