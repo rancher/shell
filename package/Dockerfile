@@ -1,5 +1,5 @@
-FROM golang:1.13 AS helm
-RUN git -C / clone --branch v3.3.3-rancher3 --depth=1 https://github.com/rancher/helm
+FROM golang:1.16.4 AS helm
+RUN git -C / clone --branch v3.5.4-rancher.1 --depth=1 https://github.com/rancher/helm
 RUN make -C /helm
 
 FROM alpine:3.12 AS build
@@ -9,7 +9,7 @@ ENV KUBECTL_VERSION v1.19.7
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/${ARCH}/kubectl && \
     chmod +x kubectl
 RUN if [ "${ARCH}" = "amd64" ]; then ARCH=x86_64; fi && \
-    curl -L https://github.com/derailed/k9s/releases/download/v0.20.2/k9s_Linux_${ARCH}.tar.gz | tar xvzf -
+    curl -L https://github.com/derailed/k9s/releases/download/v0.24.9/k9s_Linux_${ARCH}.tar.gz | tar xvzf -
 
 FROM alpine:3.12
 RUN apk add -U --no-cache bash bash-completion jq
