@@ -1,5 +1,5 @@
-FROM golang:1.13 AS helm
-RUN git -C / clone --branch v3.3.3-rancher3 --depth=1 https://github.com/rancher/helm
+FROM golang:1.16.4 AS helm
+RUN git -C / clone --branch release-v3.6.0 --depth=1 https://github.com/rancher/helm
 RUN make -C /helm
 
 FROM alpine:3.12 AS build
