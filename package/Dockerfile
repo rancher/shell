@@ -5,7 +5,7 @@ RUN make -C /helm
 FROM alpine:3.12 AS build
 ARG ARCH=amd64
 RUN apk add -U curl xz
-ENV KUBECTL_VERSION v1.19.7
+ENV KUBECTL_VERSION v1.20.7
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/${ARCH}/kubectl && \
     chmod +x kubectl
 RUN if [ "${ARCH}" = "amd64" ]; then ARCH=x86_64; fi && \
