@@ -1,4 +1,4 @@
-FROM golang:1.13 AS helm
+FROM golang:1.14 AS helm
 RUN git -C / clone --branch v3.3.3-rancher3 --depth=1 https://github.com/rancher/helm
 RUN make -C /helm
 
