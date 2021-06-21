@@ -11,8 +11,11 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL
 RUN if [ "${ARCH}" = "amd64" ]; then ARCH=x86_64; fi && \
     curl -L https://github.com/derailed/k9s/releases/download/v0.20.2/k9s_Linux_${ARCH}.tar.gz | tar xvzf -
 
-FROM alpine:3.12
-RUN apk add -U --no-cache bash bash-completion jq
+FROM registry.suse.com/suse/sle15:15.3
+RUN zypper -n ar --refresh --priority 100 'https://updates.suse.com/SUSE/Products/SLE-BCI/$releasever_major-SP$releasever_minor/$basearch/product/' SLE_BCI && \
+    zypper -n install bash-completion jq && \
+    zypper -n clean -a && rm -rf /tmp/* /var/tmp/* /usr/share/doc/packages/* && \
+    rpm -e libsolv-tools zypper libzypp container-suseconnect 
 RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /etc/passwd && \
     echo 'shell:x:1000:' > /etc/group && \
     mkdir /home/shell && \
