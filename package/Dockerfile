@@ -15,7 +15,7 @@ RUN if [ "${ARCH}" = "amd64" ]; then ARCH=x86_64; fi && \
     curl -sfL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_${K9S_VERSION}_Linux_${ARCH}.tar.gz | tar xvzf -
 
 FROM alpine:3.12
-RUN apk add -U --no-cache bash bash-completion jq
+RUN apk add -U --no-cache bash bash-completion jq curl
 RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /etc/passwd && \
     echo 'shell:x:1000:' > /etc/group && \
     mkdir /home/shell && \
