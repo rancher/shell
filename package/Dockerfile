@@ -6,13 +6,11 @@ FROM alpine:3.12 AS build
 ARG ARCH=amd64
 RUN apk add -U curl xz
 ENV KUBECTL_VERSION v1.19.7
-ENV K9S_VERSION v0.24.10
+ENV K9S_VERSION v0.24.14
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/${ARCH}/kubectl && \
     chmod +x kubectl
-# the filename will be stwiched back to k9s_{OS}_{ARCH}.tar.gz in the next relase: https://github.com/derailed/k9s/issues/1131
-# we need to revert the changes for the URL at that time
 RUN if [ "${ARCH}" = "amd64" ]; then ARCH=x86_64; fi && \
-    curl -sfL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_${K9S_VERSION}_Linux_${ARCH}.tar.gz | tar xvzf -
+    curl -sfL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${ARCH}.tar.gz | tar xvzf -
 
 FROM alpine:3.12
 RUN apk add -U --no-cache bash bash-completion jq
