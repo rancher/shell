@@ -1,18 +1,18 @@
-FROM golang:1.16.4 AS helm
+FROM golang:1.16.7 AS helm
 RUN git -C / clone --branch release-v3.6.0 --depth=1 https://github.com/rancher/helm
 RUN make -C /helm
 
-FROM alpine:3.12 AS build
+FROM alpine:3.14 AS build
 ARG ARCH=amd64
 RUN apk add -U curl xz
-ENV KUBECTL_VERSION v1.19.7
-ENV K9S_VERSION v0.24.14
+ENV KUBECTL_VERSION v1.20.10
+ENV K9S_VERSION v0.24.15
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/${ARCH}/kubectl && \
     chmod +x kubectl
 RUN if [ "${ARCH}" = "amd64" ]; then ARCH=x86_64; fi && \
     curl -sfL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${ARCH}.tar.gz | tar xvzf -
 
-FROM alpine:3.12
+FROM alpine:3.14
 RUN apk add -U --no-cache bash bash-completion jq
 RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /etc/passwd && \
     echo 'shell:x:1000:' > /etc/group && \
