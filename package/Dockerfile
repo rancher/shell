@@ -7,10 +7,13 @@ ARG ARCH=amd64
 RUN apk add -U curl xz
 ENV KUBECTL_VERSION v1.19.7
 ENV K9S_VERSION v0.24.14
+ENV KUSTOMIZE_VERSION v3.10.0
+ENV KUSTOMIZE_URL=https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/${ARCH}/kubectl && \
     chmod +x kubectl
 RUN if [ "${ARCH}" = "amd64" ]; then ARCH=x86_64; fi && \
     curl -sfL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${ARCH}.tar.gz | tar xvzf -
+RUN curl -sLf ${KUSTOMIZE_URL} | tar -xzf - && chmod +x kustomize
 
 FROM alpine:3.12
 RUN apk add -U --no-cache bash bash-completion jq
@@ -27,7 +30,9 @@ RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /etc/passwd && \
     chmod 700 /run
 COPY --from=helm ./helm/bin/helm /usr/local/bin/
 COPY --from=build /kubectl /k9s /usr/local/bin/
+COPY --from=build ./kustomize /usr/local/bin/
 COPY package/helm-cmd package/welcome /usr/local/bin/
+COPY kustomize.sh /home/shell/
 USER 1000
 WORKDIR /home/shell
 CMD ["welcome"]

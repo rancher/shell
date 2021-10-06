@@ -15,6 +15,14 @@ for i in $(seq 1 20); do
 done
 
 for i in operation*; do
+    # If a kustomize yaml has been passed along with the operation
+    # it will have the same numerical suffix.
+    kustomization=$(echo $i.yaml | sed "s/operation/kustomization/g")
+    if [[ -f $kustomization ]]; then
+      # Renaming file because kustomize only supports the following filenames:
+      # kustomization.yaml, kustomization.yml, and Kustomization.
+      cp $kustomization kustomization.yaml
+    fi
     cat $i | xargs -0 -- echo helm
     cat $i | xargs -0 -- helm
     echo
