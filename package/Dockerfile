@@ -31,7 +31,7 @@ RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /etc/passwd && \
     chown -R shell /home/shell && \
     chmod 700 /run
 COPY --from=helm ./helm/bin/helm /usr/local/bin/
-COPY --from=build /kubectl /k9s ./kustomize /usr/local/bin/
+COPY --from=build /kubectl /k9s ./kustomize* /usr/local/bin/
 COPY package/helm-cmd package/welcome /usr/local/bin/
 COPY kustomize.sh /home/shell/
 USER 1000
