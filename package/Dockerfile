@@ -5,7 +5,7 @@ RUN make -C /helm
 FROM alpine:3.12 AS build
 ARG ARCH=amd64
 RUN apk add -U curl xz
-ENV KUBECTL_VERSION v1.19.7
+ENV KUBECTL_VERSION v1.21.8
 ENV K9S_VERSION v0.25.3
 ENV KUSTOMIZE_VERSION v4.4.1
 ENV KUSTOMIZE_URL=https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz
