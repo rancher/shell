@@ -1,9 +1,9 @@
-FROM golang:1.16.12-alpine3.15
+FROM registry.suse.com/bci/golang:1.17
 
 ARG DAPPER_HOST_ARCH
 ENV ARCH $DAPPER_HOST_ARCH
 
-RUN apk -U add bash git gcc musl-dev docker vim less file curl wget ca-certificates
+RUN zypper -n install git docker vim less file curl wget
 RUN go get golang.org/x/lint/golint && go install golang.org/x/tools/cmd/goimports@latest
 RUN if [ "${ARCH}" == "amd64" ]; then \
         curl -sL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s v1.15.0; \
@@ -14,6 +14,7 @@ ENV DAPPER_ENV REPO TAG DRONE_TAG CROSS
 ENV DAPPER_SOURCE /go/src/github.com/rancher/shell/
 ENV DAPPER_OUTPUT ./bin ./dist
 ENV DAPPER_DOCKER_SOCKET true
+ENV GOPATH /go
 ENV HOME ${DAPPER_SOURCE}
 WORKDIR ${DAPPER_SOURCE}
 
