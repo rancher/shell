@@ -1,10 +1,11 @@
-FROM golang:1.17.6 AS helm
+FROM registry.suse.com/bci/golang:1.17 AS helm
+RUN zypper -n install git
 RUN git -C / clone --branch release-v3.8.0 --depth=1 https://github.com/rancher/helm
 RUN make -C /helm
 
-FROM alpine:3.12 AS build
+FROM registry.suse.com/bci/bci-base:15.3 AS build
 ARG ARCH=amd64
-RUN apk add -U curl xz
+RUN zypper -n install curl gzip tar
 ENV KUBECTL_VERSION v1.21.8
 ENV K9S_VERSION v0.25.3
 ENV KUSTOMIZE_VERSION v4.4.1
@@ -15,10 +16,12 @@ RUN if [ "${ARCH}" = "amd64" ]; then ARCH=x86_64; fi && \
     curl -sfL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${ARCH}.tar.gz | tar xvzf -
 RUN if [ "${ARCH}" = "amd64" ] || [ "${ARCH}" = "arm64" ] || [ "${ARCH}" = "s390x" ]; then \
     curl -sLf ${KUSTOMIZE_URL} | tar -xzf - && chmod +x kustomize; \
-  fi
+    fi
 
-FROM alpine:3.12
-RUN apk add -U --no-cache bash bash-completion jq
+FROM registry.suse.com/bci/bci-base:15.3
+RUN zypper -n update && \
+    zypper -n install bash-completion jq && \
+    zypper -n clean -a && rm -rf /tmp/* /var/tmp/* /usr/share/doc/packages/* /usr/share/doc/manual/* /var/log/*
 RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /etc/passwd && \
     echo 'shell:x:1000:' > /etc/group && \
     mkdir /home/shell && \

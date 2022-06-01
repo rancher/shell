@@ -86,49 +86,6 @@ volumes:
 
 ---
 kind: pipeline
-name: arm
-
-platform:
-  os: linux
-  arch: arm
-
-steps:
-- name: build
-  image: rancher/dapper:v0.4.1
-  commands:
-  - dapper ci
-  volumes:
-  - name: docker
-    path: /var/run/docker.sock
-
-- name: docker-publish
-  image: plugins/docker
-  settings:
-    build_args:
-    - ARCH=arm
-    dockerfile: package/Dockerfile
-    password:
-      from_secret: docker_password
-    repo: "rancher/shell"
-    tag: "${DRONE_TAG}-arm"
-    username:
-      from_secret: docker_username
-  when:
-    instance:
-    - drone-publish.rancher.io
-    ref:
-    - refs/head/master
-    - refs/tags/*
-    event:
-    - tag
-
-volumes:
-- name: docker
-  host:
-    path: /var/run/docker.sock
-
----
-kind: pipeline
 name: s390x
 
 platform:
@@ -196,7 +153,6 @@ steps:
     platforms:
       - linux/amd64
       - linux/arm64
-      - linux/arm
       - linux/s390x
     target: "rancher/shell:${DRONE_TAG}"
     template: "rancher/shell:${DRONE_TAG}-ARCH"
@@ -212,7 +168,6 @@ steps:
 depends_on:
 - amd64
 - arm64
-- arm
 - s390x
 
 ---
