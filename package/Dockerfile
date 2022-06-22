@@ -7,13 +7,20 @@ FROM registry.suse.com/bci/bci-base:15.3 AS build
 ARG ARCH=amd64
 RUN zypper -n install curl gzip tar
 ENV KUBECTL_VERSION v1.21.8
-ENV K9S_VERSION v0.25.3
-ENV KUSTOMIZE_VERSION v4.4.1
+ENV K9S_VERSION v0.25.18
+ENV KUSTOMIZE_VERSION v4.5.5
 ENV KUSTOMIZE_URL=https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/${ARCH}/kubectl && \
     chmod +x kubectl
-RUN if [ "${ARCH}" = "amd64" ]; then ARCH=x86_64; fi && \
-    curl -sfL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${ARCH}.tar.gz | tar xvzf -
+# We are bumping a few dependencies in K9s to fix some CVEs.
+# This is only necessary while PR https://github.com/derailed/k9s/pull/1591 is not merged upstream.
+# After the PR is merged, the below RUN command must be removed and the 2 lines after must be uncommented.
+# K9S_VERSION must be bumped too.
+RUN zypper -n install go git make && \
+    cd /tmp && git clone -b bump-deps https://github.com/macedogm/k9s.git && \
+    cd k9s && make build && chmod +x execs/k9s && mv execs/k9s /k9s
+#RUN if [ "${ARCH}" = "amd64" ]; then ARCH=x86_64; fi && \
+#    curl -sfL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${ARCH}.tar.gz | tar xvzf -
 RUN if [ "${ARCH}" = "amd64" ] || [ "${ARCH}" = "arm64" ] || [ "${ARCH}" = "s390x" ]; then \
     curl -sLf ${KUSTOMIZE_URL} | tar -xzf - && chmod +x kustomize; \
     fi
