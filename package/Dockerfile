@@ -20,7 +20,7 @@ RUN if [ "${ARCH}" = "amd64" ] || [ "${ARCH}" = "arm64" ] || [ "${ARCH}" = "s390
 
 FROM registry.suse.com/bci/bci-base:15.4.27.8.6
 RUN zypper -n update && \
-    zypper -n install bash-completion vim jq && \
+    zypper -n install bash-completion gzip jq tar unzip vim wget && \
     zypper clean -a && rm -rf /tmp/* /var/tmp/* /usr/share/doc/packages/* /usr/share/doc/manual/* /var/log/*
 RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /etc/passwd && \
     echo 'shell:x:1000:' > /etc/group && \
