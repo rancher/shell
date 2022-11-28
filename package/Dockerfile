@@ -29,6 +29,7 @@ RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /etc/passwd && \
     echo 'alias k="kubectl"' >> /home/shell/.bashrc && \
     echo 'alias ks="kubectl -n kube-system"' >> /home/shell/.bashrc && \
     echo 'source <(kubectl completion bash)' >> /home/shell/.bashrc && \
+    echo 'complete -o default -F __start_kubectl k' >> /home/shell/.bashrc && \
     echo 'PS1="> "' >> /home/shell/.bashrc && \
     mkdir /home/shell/.kube && \
     chown -R shell /home/shell && \
