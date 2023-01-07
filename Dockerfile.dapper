@@ -1,20 +1,14 @@
-FROM registry.suse.com/bci/golang:1.19-19.13
+FROM registry.suse.com/bci/bci-base:15.4.27.14.27
 
 ARG DAPPER_HOST_ARCH
 ENV ARCH $DAPPER_HOST_ARCH
 
-RUN zypper -n install git docker vim less file curl wget
-RUN go install golang.org/x/lint/golint@latest && go install golang.org/x/tools/cmd/goimports@latest
-RUN if [[ "${ARCH}" == "amd64" ]]; then \
-        curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.46.2; \
-    fi
+RUN zypper -n install docker git
 
-ENV GO111MODULE off
 ENV DAPPER_ENV REPO TAG DRONE_TAG CROSS
-ENV DAPPER_SOURCE /go/src/github.com/rancher/shell/
+ENV DAPPER_SOURCE /shell
 ENV DAPPER_OUTPUT ./bin ./dist
 ENV DAPPER_DOCKER_SOCKET true
-ENV GOPATH /go
 ENV HOME ${DAPPER_SOURCE}
 WORKDIR ${DAPPER_SOURCE}
 
