@@ -5,5 +5,13 @@
   "baseBranches": [
     "master"
   ],
-  "prHourlyLimit": 2
+  "prHourlyLimit": 2,
+  "packageRules": [
+    {
+      "matchDepNames": [
+        "kubernetes/kubernetes"
+      ],
+      "allowedVersions": "<1.25.0"
+    }
+  ]
 }
