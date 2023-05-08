@@ -7,7 +7,7 @@ FROM registry.suse.com/bci/bci-base:15.4.27.14.56 AS build
 ARG ARCH=amd64
 RUN zypper -n install curl gzip tar
 ENV KUBECTL_VERSION v1.24.13
-ENV K9S_VERSION=v0.27.3
+ENV K9S_VERSION=v0.27.4
 ENV KUSTOMIZE_VERSION=v5.0.2
 ENV KUSTOMIZE_URL=https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/${ARCH}/kubectl && \
