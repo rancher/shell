@@ -11,7 +11,7 @@
       "matchDepNames": [
         "kubernetes/kubernetes"
       ],
-      "allowedVersions": "<1.25.0"
+      "allowedVersions": "<1.26.0"
     }
   ]
 }
