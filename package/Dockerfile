@@ -8,7 +8,7 @@ ARG ARCH=amd64
 RUN zypper -n install curl gzip tar
 ENV KUBECTL_VERSION v1.24.14
 ENV K9S_VERSION=v0.27.4
-ENV KUSTOMIZE_VERSION=v5.1.0
+ENV KUSTOMIZE_VERSION=v5.1.1
 ENV KUSTOMIZE_URL=https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/${ARCH}/kubectl && \
     chmod +x kubectl
