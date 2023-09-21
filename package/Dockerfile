@@ -6,7 +6,7 @@ RUN make -C /helm
 FROM registry.suse.com/bci/bci-base:15.5.36.5.20 AS build
 ARG ARCH=amd64
 RUN zypper -n install curl gzip tar
-ENV KUBECTL_VERSION v1.24.16
+ENV KUBECTL_VERSION v1.26.8
 ENV K9S_VERSION=v0.27.4
 ENV KUSTOMIZE_VERSION=v5.1.1
 ENV KUSTOMIZE_URL=https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz
