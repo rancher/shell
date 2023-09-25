@@ -1,9 +1,9 @@
-FROM registry.suse.com/bci/golang:1.19-20.13 AS helm
+FROM registry.suse.com/bci/golang:1.20 AS helm
 RUN zypper -n install git
 RUN git -C / clone --branch release-v3.11.3 --depth=1 https://github.com/rancher/helm
 RUN make -C /helm
 
-FROM registry.suse.com/bci/bci-base:15.5.36.5.20 AS build
+FROM registry.suse.com/bci/bci-base:15.5 AS build
 ARG ARCH=amd64
 RUN zypper -n install curl gzip tar
 ENV KUBECTL_VERSION v1.24.16
@@ -17,7 +17,7 @@ RUN if [ "${ARCH}" = "amd64" ] || [ "${ARCH}" = "arm64" ] || [ "${ARCH}" = "s390
     curl -sLf ${KUSTOMIZE_URL} | tar -xzf - && chmod +x kustomize; \
     fi
 
-FROM registry.suse.com/bci/bci-base:15.5.36.5.20
+FROM registry.suse.com/bci/bci-base:15.5
 RUN zypper -n update && \
     zypper -n install bash-completion gzip jq tar unzip vim wget && \
     zypper clean -a && rm -rf /tmp/* /var/tmp/* /usr/share/doc/packages/* /usr/share/doc/manual/* /var/log/*
