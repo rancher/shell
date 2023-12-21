@@ -13,7 +13,7 @@ ENV KUSTOMIZE_URL=https://github.com/kubernetes-sigs/kustomize/releases/download
 RUN curl -LO https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${ARCH}/kubectl && \
     chmod +x kubectl
 RUN curl -sfL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${ARCH}.tar.gz | tar xvzf -
-RUN if [ "${ARCH}" = "amd64" ] || [ "${ARCH}" = "arm64" ] || [ "${ARCH}" = "s390x" ]; then \
+RUN if [ "${ARCH}" = "amd64" ] || [ "${ARCH}" = "arm64" ]; then \
     curl -sLf ${KUSTOMIZE_URL} | tar -xzf - && chmod +x kustomize; \
     fi
 
