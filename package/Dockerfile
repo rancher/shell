@@ -1,4 +1,4 @@
-FROM registry.suse.com/bci/golang:1.20 AS helm
+FROM registry.suse.com/bci/golang:1.21 AS helm
 RUN zypper -n install git
 RUN git -C / clone --branch release-v3.12.3 --depth=1 https://github.com/rancher/helm
 RUN make -C /helm
