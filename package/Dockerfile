@@ -7,7 +7,7 @@ FROM registry.suse.com/bci/bci-base:15.5 AS build
 ARG ARCH=amd64
 RUN zypper -n install curl gzip tar
 ENV KUBECTL_VERSION v1.26.9
-ENV K9S_VERSION=v0.31.2
+ENV K9S_VERSION=v0.31.4
 ENV KUSTOMIZE_VERSION=v5.2.1
 ENV KUSTOMIZE_URL=https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz
 RUN curl -LO https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${ARCH}/kubectl && \
