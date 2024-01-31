@@ -18,7 +18,14 @@ ci: test validate e2e ## run the targets needed to validate a PR in CI.
 clean: ## clean up project.
 	rm -rf build
 
-test: ## test the build against all target platforms.
+test: test-build ## test the build against all target platforms.
+	$(MAKE) image-build
+	IMAGE=$(IMAGE) \
+	KUBECTL_VERSION=$(KUBECTL_VERSION) HELM_VERSION=$(HELM_VERSION) \
+	KUSTOMIZE_VERSION=$(KUSTOMIZE_VERSION) K9S_VERSION=$(K9S_VERSION) \
+		./hack/test
+
+test-build:
 	# Instead of loading image, target all platforms, effectivelly testing
 	# the build for the target architectures.
 	$(MAKE) image-build BUILD_ACTION="--platform=$(TARGET_PLATFORMS)"
