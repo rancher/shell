@@ -1,7 +1,7 @@
 # Image that provides cross compilation tooling.
 FROM --platform=$BUILDPLATFORM rancher/mirrored-tonistiigi-xx:1.3.0 as xx
 
-FROM --platform=$BUILDPLATFORM registry.suse.com/bci/golang:1.21 as helm
+FROM --platform=$BUILDPLATFORM registry.suse.com/bci/golang:1.22 as helm
 
 # Clone repository once, and reuse it for target archs.
 ARG HELM_VERSION
