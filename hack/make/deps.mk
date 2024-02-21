@@ -1,4 +1,4 @@
-HELM_VERSION := release-v3.12.3
+HELM_VERSION := v3.13.3-rancher1
 
 KUBECTL_VERSION := v1.26.9
 # curl -L "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/arm64/kubectl.sha256"
