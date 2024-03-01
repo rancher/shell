@@ -24,7 +24,7 @@ for i in operation*; do
       cp $kustomization kustomization.yaml
     fi
     cat $i | xargs -0 -- echo helm
-    cat $i | xargs -0 -- helm
+    cat $i | xargs -0 -- helm 2>&1 | sed '/WARNING: Kubernetes configuration file is group-readable/d; /WARNING: Kubernetes configuration file is world-readable/d'
     echo
     echo '---------------------------------------------------------------------'
     cat $i | xargs -0 -- echo SUCCESS: helm
