@@ -11,11 +11,11 @@ KUBECTL_SUM_s390x := 6c3f1cac8d70286eb4a661d783558101b9e4891e7997f744183506466a0
 
 # renovate: datasource=github-release-attachments depName=kubernetes-sigs/kustomize
 KUSTOMIZE_VERSION := v5.3.0
-# renovate: datasource=github-release-attachments depName=kubernetes-sigs/kustomize digestVersion=v0.31.7
+# renovate: datasource=github-release-attachments depName=kubernetes-sigs/kustomize digestVersion=v5.3.0
 KUSTOMIZE_SUM_arm64 := a1ec622d4adeb483e3cdabd70f0d66058b1e4bcec013c4f74f370666e1e045d8
-# renovate: datasource=github-release-attachments depName=kubernetes-sigs/kustomize digestVersion=v0.31.7
+# renovate: datasource=github-release-attachments depName=kubernetes-sigs/kustomize digestVersion=v5.3.0
 KUSTOMIZE_SUM_amd64 := 3ab32f92360d752a2a53e56be073b649abc1e7351b912c0fb32b960d1def854c
-# renovate: datasource=github-release-attachments depName=kubernetes-sigs/kustomize digestVersion=v0.31.7
+# renovate: datasource=github-release-attachments depName=kubernetes-sigs/kustomize digestVersion=v5.3.0
 KUSTOMIZE_SUM_s390x := 0b1a00f0e33efa2ecaa6cda9eeb63141ddccf97a912425974d6b65e66cf96cd4
 
 # renovate: datasource=github-release-attachments depName=derailed/k9s
