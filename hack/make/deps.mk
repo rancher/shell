@@ -2,12 +2,9 @@
 HELM_VERSION := v3.13.3-rancher1
 
 KUBECTL_VERSION := v1.26.9
-# curl -L "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/arm64/kubectl.sha256"
-KUBECTL_SUM_arm64 := f945c63220b393ddf8df67d87e67ff74b7f56219a670dee38bc597a078588e90
-# curl -L "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl.sha256"
-KUBECTL_SUM_amd64 := 98ea4a13895e54ba24f57e0d369ff6be0d3906895305d5390197069b1da12ae2
-# curl -L "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/s390x/kubectl.sha256"
-KUBECTL_SUM_s390x := 6c3f1cac8d70286eb4a661d783558101b9e4891e7997f744183506466a03625f
+KUBECTL_SUM_arm64 ?= $(shell curl -L "https://dl.k8s.io/release/$(KUBECTL_VERSION)/bin/linux/arm64/kubectl.sha256")
+KUBECTL_SUM_amd64 ?= $(shell curl -L "https://dl.k8s.io/release/$(KUBECTL_VERSION)/bin/linux/amd64/kubectl.sha256")
+KUBECTL_SUM_s390x ?= $(shell curl -L "https://dl.k8s.io/release/$(KUBECTL_VERSION)/bin/linux/s390x/kubectl.sha256")
 
 # renovate: datasource=github-release-attachments depName=kubernetes-sigs/kustomize
 KUSTOMIZE_VERSION := v5.3.0
