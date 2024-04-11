@@ -7,7 +7,7 @@ KUBECTL_SUM_amd64 ?= $(shell curl -L "https://dl.k8s.io/release/$(KUBECTL_VERSIO
 KUBECTL_SUM_s390x ?= $(shell curl -L "https://dl.k8s.io/release/$(KUBECTL_VERSION)/bin/linux/s390x/kubectl.sha256")
 
 # renovate: datasource=github-release-attachments depName=kubernetes-sigs/kustomize
-KUSTOMIZE_VERSION := v5.3.0
+KUSTOMIZE_VERSION := "kustomize/v5.3.0"
 # renovate: datasource=github-release-attachments depName=kubernetes-sigs/kustomize digestVersion=kustomize/v5.3.0
 KUSTOMIZE_SUM_arm64 := a1ec622d4adeb483e3cdabd70f0d66058b1e4bcec013c4f74f370666e1e045d8
 # renovate: datasource=github-release-attachments depName=kubernetes-sigs/kustomize digestVersion=kustomize/v5.3.0
