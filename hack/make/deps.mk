@@ -8,12 +8,12 @@ KUBECTL_SUM_s390x ?= $(shell curl -L "https://dl.k8s.io/release/$(KUBECTL_VERSIO
 
 # renovate: datasource=github-release-attachments depName=kubernetes-sigs/kustomize extractVersion=kustomize/v(?<version>\d+\.\d+\.\d+)
 KUSTOMIZE_VERSION := v5.4.1
-# renovate: datasource=github-release-attachments depName=kubernetes-sigs/kustomize versioning=regex:^kustomize/v(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)$ digestVersion=kustomize/v5.3.0
-KUSTOMIZE_SUM_arm64 := a1ec622d4adeb483e3cdabd70f0d66058b1e4bcec013c4f74f370666e1e045d8
-# renovate: datasource=github-release-attachments depName=kubernetes-sigs/kustomize versioning=regex:^kustomize/v(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)$ digestVersion=kustomize/v5.3.0
-KUSTOMIZE_SUM_amd64 := 3ab32f92360d752a2a53e56be073b649abc1e7351b912c0fb32b960d1def854c
-# renovate: datasource=github-release-attachments depName=kubernetes-sigs/kustomize versioning=regex:^kustomize/v(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)$ digestVersion=kustomize/v5.3.0
-KUSTOMIZE_SUM_s390x := 0b1a00f0e33efa2ecaa6cda9eeb63141ddccf97a912425974d6b65e66cf96cd4
+# renovate: datasource=github-release-attachments depName=kubernetes-sigs/kustomize versioning=regex:^kustomize/v(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)$ digestVersion=kustomize/v5.4.1
+KUSTOMIZE_SUM_arm64 := 123b9ce38e04a03de5907153ef7f16979027bad16d0763a304e59dcf69ac6d30
+# renovate: datasource=github-release-attachments depName=kubernetes-sigs/kustomize versioning=regex:^kustomize/v(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)$ digestVersion=kustomize/v5.4.1
+KUSTOMIZE_SUM_amd64 := 3d659a80398658d4fec4ec4ca184b432afa1d86451a60be63ca6e14311fc1c42
+# renovate: datasource=github-release-attachments depName=kubernetes-sigs/kustomize versioning=regex:^kustomize/v(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)$ digestVersion=kustomize/v5.4.1
+KUSTOMIZE_SUM_s390x := 670330c1d02b5978f63e892ce0ff26dd2efc069b82737962f74a1d07071e7ef8
 
 # renovate: datasource=github-release-attachments depName=derailed/k9s
 K9S_VERSION := v0.32.4
