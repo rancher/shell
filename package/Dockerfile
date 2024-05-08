@@ -22,7 +22,6 @@ RUN zypper -n install curl gzip tar
 
 # Define build arguments
 ARG KUBECTL_VERSION KUBECTL_SUM_arm64 KUBECTL_SUM_amd64 KUBECTL_SUM_s390x \
-    KUSTOMIZE_VERSION KUSTOMIZE_SUM_arm64 KUSTOMIZE_SUM_amd64 KUSTOMIZE_SUM_s390x \
     K9S_VERSION K9S_SUM_arm64 K9S_SUM_amd64 K9S_SUM_s390x
 
 ARG TARGETARCH
@@ -33,12 +32,6 @@ ADD --chown=root:root --chmod=0755 \
 
 ENV KUBECTL_SUM="KUBECTL_SUM_${TARGETARCH}"
 RUN echo "${!KUBECTL_SUM}  /kubectl" | sha256sum -c -
-
-# Stage kubectl into build
-ENV KUSTOMIZE_SUM="KUSTOMIZE_SUM_${TARGETARCH}"
-RUN curl --output /tmp/kustomize.tar.gz -sLf "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${TARGETARCH}.tar.gz" && \
-    echo "${!KUSTOMIZE_SUM}  /tmp/kustomize.tar.gz" | sha256sum -c - && \
-    tar -xvzf /tmp/kustomize.tar.gz -C / kustomize
 
 # Stage k9s into build
 ENV K9S_SUM="K9S_SUM_${TARGETARCH}"
@@ -65,7 +58,7 @@ RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /etc/passwd && \
     chmod 700 /run
 
 COPY --chown=root:root --chmod=0755 --from=helm /helm/bin/helm /usr/local/bin/
-COPY --chown=root:root --chmod=0755 --from=build /kubectl /k9s /kustomize* /usr/local/bin/
+COPY --chown=root:root --chmod=0755 --from=build /kubectl /k9s /usr/local/bin/
 COPY --chown=root:root --chmod=0755 package/helm-cmd package/welcome /usr/local/bin/
 COPY --chown=1000:1000 --chmod=0755 package/kustomize.sh /home/shell/
 
