@@ -1,5 +1,5 @@
 # renovate: datasource=github-release-attachments depName=rancher/helm
-HELM_VERSION := v3.14.3-rancher1
+HELM_VERSION := v3.14.3-rancher2
 
 KUBECTL_VERSION := v1.26.9
 KUBECTL_SUM_arm64 ?= $(shell curl -L "https://dl.k8s.io/release/$(KUBECTL_VERSION)/bin/linux/arm64/kubectl.sha256")
