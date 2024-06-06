@@ -3,7 +3,8 @@
     "github>rancher/renovate-config#modigest"
   ],
   "baseBranches": [
-    "master"
+    "master",
+    "release/v2.9"
   ],
   "prHourlyLimit": 2,
   "packageRules": [
