@@ -18,7 +18,7 @@ This is the current branch strategy for `rancher/shell`, it may change in the fu
 This branch supports Rancher 2.7/2.8 and spans supporting k8s 1.23 through 1.28.  
 Here are the current component versions and their k8s support:
 
-| Component   | Version | Supported K8S               |
+| Component   | Version | Supported K8s               |
 |-------------|---------|-----------------------------|
 | `kubectl`   |`v1.26.x`| `1.25`,`1.26`,`1.27`        |
 | `kustomize` |`v5.4.x` |             n/a            |
@@ -29,7 +29,7 @@ Here are the current component versions and their k8s support:
 This branch supports Rancher 2.9 and spans supporting k8s 1.27 through 1.30.  
 Here are the current component versions and their k8s support:
 
-| Component   | Version            | Supported K8S              |
+| Component   | Version            | Supported K8s              |
 |-------------|--------------------|----------------------------|
 | `kubectl`   | `v1.28.x`          | `1.27`,`1.28`,`1.29`       |
 | `kustomize` | `v5.4.x`           |             n/a            |
