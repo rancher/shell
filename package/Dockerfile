@@ -40,6 +40,7 @@ RUN curl --output /tmp/k9s.tar.gz -sLf "https://github.com/derailed/k9s/releases
     echo "${!K9S_SUM}  /tmp/k9s.tar.gz" | sha256sum -c - && \
     tar -xvzf /tmp/k9s.tar.gz -C / k9s
 
+FROM --platform=$BUILDPLATFORM mallardduck/rancher-kuberlr:v2.0.0-rc.4 as kuberlr
 FROM registry.suse.com/bci/bci-base:${BCI_VERSION} as zypper
 
 # Creates the based dir for the target image, and hydrades it with the
@@ -68,6 +69,11 @@ RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /chroot/etc/passwd
         echo 'LANG=en_US.UTF-8' >> /chroot/home/shell/.bashrc && \
         echo 'PS1="> "' >> /chroot/home/shell/.bashrc && \
         mkdir /chroot/home/shell/.kube && \
+        mkdir /chroot/home/shell/.kuberlr && \
+        touch /chroot/home/shell/.kuberlr/kuberlr.conf && \
+        echo "AllowDownload = false" >> /chroot/home/shell/.kuberlr/kuberlr.conf && \
+        echo 'SystemPath = "/usr/bin"' >> /chroot/home/shell/.kuberlr/kuberlr.conf && \
+        echo "Timeout = 6" >> /chroot/home/shell/.kuberlr/kuberlr.conf && \
         chown -R 1000:1000 /chroot/home/shell && \
         chmod 700 /chroot/run
 
@@ -76,6 +82,8 @@ FROM scratch
 COPY --from=zypper /chroot /
 COPY --chown=root:root --chmod=0755 --from=helm /helm/bin/helm /usr/local/bin/
 COPY --chown=root:root --chmod=0755 --from=build /kubectl /k9s /kustomize* /usr/local/bin/
+COPY --chown=root:root --chmod=0755 --from=kuberlr /usr/bin/kubectl* /usr/bin/
+COPY --chown=root:root --chmod=0755 --from=kuberlr /bin/kuberlr /bin/kubectl /bin/
 COPY --chown=root:root --chmod=0755 package/helm-cmd package/welcome /usr/local/bin/
 COPY --chown=1000:1000 --chmod=0755 package/kustomize.sh /home/shell/
 
