@@ -24,19 +24,10 @@ FROM --platform=$BUILDPLATFORM registry.suse.com/bci/bci-base:${BCI_VERSION} AS 
 RUN zypper -n install curl gzip tar
 
 # Define build arguments
-ARG KUBECTL_VERSION KUBECTL_SUM_arm64 KUBECTL_SUM_amd64 KUBECTL_SUM_s390x \
-    KUSTOMIZE_VERSION KUSTOMIZE_SUM_arm64 KUSTOMIZE_SUM_amd64 KUSTOMIZE_SUM_s390x \
+ARG KUBECTL_VERSION KUSTOMIZE_VERSION KUSTOMIZE_SUM_arm64 KUSTOMIZE_SUM_amd64 KUSTOMIZE_SUM_s390x \
     K9S_VERSION K9S_SUM_arm64 K9S_SUM_amd64 K9S_SUM_s390x
 
 ARG TARGETARCH
-# Stage kubectl into build
-ADD --chown=root:root --chmod=0755 \
-    "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${TARGETARCH}/kubectl" \
-    /kubectl
-
-ENV KUBECTL_SUM="KUBECTL_SUM_${TARGETARCH}"
-RUN echo "${!KUBECTL_SUM}  /kubectl" | sha256sum -c -
-
 # Stage kubectl into build
 ENV KUSTOMIZE_SUM="KUSTOMIZE_SUM_${TARGETARCH}"
 RUN curl --output /tmp/kustomize.tar.gz -sLf "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${TARGETARCH}.tar.gz" && \
