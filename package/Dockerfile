@@ -72,7 +72,7 @@ RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /chroot/etc/passwd
         mkdir /chroot/home/shell/.kuberlr && \
         touch /chroot/home/shell/.kuberlr/kuberlr.conf && \
         echo "AllowDownload = false" >> /chroot/home/shell/.kuberlr/kuberlr.conf && \
-        echo 'SystemPath = "/usr/bin"' >> /chroot/home/shell/.kuberlr/kuberlr.conf && \
+        echo 'SystemPath = "/usr/local/bin"' >> /chroot/home/shell/.kuberlr/kuberlr.conf && \
         echo "Timeout = 6" >> /chroot/home/shell/.kuberlr/kuberlr.conf && \
         chown -R 1000:1000 /chroot/home/shell && \
         chmod 700 /chroot/run
@@ -82,7 +82,7 @@ FROM scratch
 COPY --from=zypper /chroot /
 COPY --chown=root:root --chmod=0755 --from=helm /helm/bin/helm /usr/local/bin/
 COPY --chown=root:root --chmod=0755 --from=build /k9s /kustomize* /usr/local/bin/
-COPY --chown=root:root --chmod=0755 --from=kuberlr /usr/bin/kubectl* /usr/bin/
+COPY --chown=root:root --chmod=0755 --from=kuberlr /usr/bin/kubectl* /usr/local/bin/
 COPY --chown=root:root --chmod=0755 --from=kuberlr /bin/kuberlr /bin/kubectl /bin/
 COPY --chown=root:root --chmod=0755 package/helm-cmd package/welcome /usr/local/bin/
 COPY --chown=1000:1000 --chmod=0755 package/kustomize.sh /home/shell/
