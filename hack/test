@@ -34,7 +34,8 @@ function check_files(){
     expected_file "/usr/local/bin/helm" "0:0" "755"
     expected_file "/usr/local/bin/helm-cmd" "0:0" "755"
     expected_file "/usr/local/bin/k9s" "0:0" "755"
-    expected_file "/usr/local/bin/kubectl" "0:0" "755"
+    expected_file "/usr/bin/kuberlr" "0:0" "755"
+    expected_file "/usr/bin/kubectl" "0:0" "755"
     expected_file "/usr/local/bin/kustomize" "0:0" "755"
     expected_file "/usr/local/bin/welcome" "0:0" "755"
     expected_file "/home/shell/kustomize.sh" "1000:1000" "755"
@@ -64,9 +65,6 @@ function check_versions(){
     expected_version "helm" "${HELM_VERSION}"
     expected_version "kustomize" "${KUSTOMIZE_VERSION}"
     expected_version "k9s" "${K9S_VERSION}"
-    # --client=true is used so that it does not fail trying to
-    # identify the server version.
-    expected_version "kubectl --client=true" "${KUBECTL_VERSION}"
 }
 
 function main(){
