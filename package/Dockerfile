@@ -83,7 +83,8 @@ COPY --from=zypper /chroot /
 COPY --chown=root:root --chmod=0755 --from=helm /helm/bin/helm /usr/local/bin/
 COPY --chown=root:root --chmod=0755 --from=build /k9s /kustomize* /usr/local/bin/
 COPY --chown=root:root --chmod=0755 --from=kuberlr /usr/bin/kubectl* /usr/local/bin/
-COPY --chown=root:root --chmod=0755 --from=kuberlr /bin/kuberlr /bin/kubectl /bin/
+COPY --chown=root:root --chmod=0755 --from=kuberlr /bin/kuberlr /bin/
+RUN ln -s /bin/kuberlr /bin/kubectl
 COPY --chown=root:root --chmod=0755 package/helm-cmd package/welcome /usr/local/bin/
 COPY --chown=1000:1000 --chmod=0755 package/kustomize.sh /home/shell/
 
