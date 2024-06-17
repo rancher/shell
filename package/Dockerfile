@@ -40,7 +40,9 @@ RUN curl --output /tmp/k9s.tar.gz -sLf "https://github.com/derailed/k9s/releases
     echo "${!K9S_SUM}  /tmp/k9s.tar.gz" | sha256sum -c - && \
     tar -xvzf /tmp/k9s.tar.gz -C / k9s
 
-FROM --platform=$BUILDPLATFORM mallardduck/rancher-kuberlr:v2.0.0-rc.4 as kuberlr
+# Set the base kuberlr image to pull kuberlr and kubectl from
+ARG KUBERLR_VERSION=v2.0.0-rc.6
+FROM --platform=$BUILDPLATFORM mallardduck/rancher-kuberlr:${KUBERLR_VERSION} as kuberlr
 FROM registry.suse.com/bci/bci-base:${BCI_VERSION} as zypper
 
 # Creates the based dir for the target image, and hydrades it with the
