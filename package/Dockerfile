@@ -1,4 +1,4 @@
-ARG BCI_VERSION=15.5
+ARG BCI_VERSION=15.6
 FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} as final
 
 # Image that provides cross compilation tooling.
@@ -20,7 +20,7 @@ RUN make -C /helm
 
 RUN xx-verify --static /helm/bin/helm
 
-FROM --platform=$BUILDPLATFORM registry.suse.com/bci/bci-base:15.5 AS build
+FROM --platform=$BUILDPLATFORM registry.suse.com/bci/bci-base:${BCI_VERSION} AS build
 RUN zypper -n install curl gzip tar
 
 # Define build arguments
@@ -47,7 +47,7 @@ RUN curl --output /tmp/kustomize.tar.gz -sLf "https://github.com/kubernetes-sigs
 ENV K9S_SUM="K9S_SUM_${TARGETARCH}"
 RUN curl --output /tmp/k9s.tar.gz -sLf "https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz" && \
     echo "${!K9S_SUM}  /tmp/k9s.tar.gz" | sha256sum -c - && \
-    tar -xvzf /tmp/k9s.tar.gz -C / k9s 
+    tar -xvzf /tmp/k9s.tar.gz -C / k9s
 
 FROM registry.suse.com/bci/bci-base:${BCI_VERSION} as zypper
 
