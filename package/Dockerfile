@@ -1,6 +1,10 @@
 ARG BCI_VERSION=15.6
 FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} as final
 
+# Set the base kuberlr image to pull kuberlr and kubectl from
+ARG KUBERLR_VERSION="v2.0.0-rc.6"
+FROM --platform=$BUILDPLATFORM mallardduck/rancher-kuberlr:${KUBERLR_VERSION} as kuberlr
+
 # Image that provides cross compilation tooling.
 FROM --platform=$BUILDPLATFORM rancher/mirrored-tonistiigi-xx:1.3.0 as xx
 
@@ -39,11 +43,6 @@ ENV K9S_SUM="K9S_SUM_${TARGETARCH}"
 RUN curl --output /tmp/k9s.tar.gz -sLf "https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz" && \
     echo "${!K9S_SUM}  /tmp/k9s.tar.gz" | sha256sum -c - && \
     tar -xvzf /tmp/k9s.tar.gz -C / k9s
-
-# Set the base kuberlr image to pull kuberlr and kubectl from
-ARG KUBERLR_VERSION=v2.0.0-rc.6
-FROM --platform=$BUILDPLATFORM mallardduck/rancher-kuberlr:${KUBERLR_VERSION} as kuberlr
-FROM registry.suse.com/bci/bci-base:${BCI_VERSION} as zypper
 
 # Creates the based dir for the target image, and hydrades it with the
 # original contents of the final image.
