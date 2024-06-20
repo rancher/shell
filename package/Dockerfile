@@ -30,7 +30,7 @@ ARG KUBECTL_VERSION KUSTOMIZE_VERSION KUSTOMIZE_SUM_arm64 KUSTOMIZE_SUM_amd64 KU
     K9S_VERSION K9S_SUM_arm64 K9S_SUM_amd64 K9S_SUM_s390x
 
 ARG TARGETARCH
-# Stage kubectl into build
+# Stage kustomize into build
 ENV KUSTOMIZE_SUM="KUSTOMIZE_SUM_${TARGETARCH}"
 RUN curl --output /tmp/kustomize.tar.gz -sLf "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${TARGETARCH}.tar.gz" && \
     echo "${!KUSTOMIZE_SUM}  /tmp/kustomize.tar.gz" | sha256sum -c - && \
@@ -41,6 +41,8 @@ ENV K9S_SUM="K9S_SUM_${TARGETARCH}"
 RUN curl --output /tmp/k9s.tar.gz -sLf "https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz" && \
     echo "${!K9S_SUM}  /tmp/k9s.tar.gz" | sha256sum -c - && \
     tar -xvzf /tmp/k9s.tar.gz -C / k9s
+
+FROM registry.suse.com/bci/bci-base:${BCI_VERSION} as zypper
 
 # Creates the based dir for the target image, and hydrades it with the
 # original contents of the final image.
