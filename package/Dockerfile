@@ -1,12 +1,12 @@
 ARG BCI_VERSION=15.6
 ARG KUBERLR_VERSION="v2.0.0-rc.6"
-FROM --platform=$BUILDPLATFORM mallardduck/rancher-kuberlr:${KUBERLR_VERSION} as kuberlr
-FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} as final
+FROM --platform=$BUILDPLATFORM mallardduck/rancher-kuberlr:${KUBERLR_VERSION} AS kuberlr
+FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} AS final
 
 # Image that provides cross compilation tooling.
-FROM --platform=$BUILDPLATFORM rancher/mirrored-tonistiigi-xx:1.3.0 as xx
+FROM --platform=$BUILDPLATFORM rancher/mirrored-tonistiigi-xx:1.3.0 AS xx
 
-FROM --platform=$BUILDPLATFORM registry.suse.com/bci/golang:1.22 as helm
+FROM --platform=$BUILDPLATFORM registry.suse.com/bci/golang:1.22 AS helm
 
 # Clone repository once, and reuse it for target archs.
 ARG HELM_VERSION
