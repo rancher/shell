@@ -42,7 +42,7 @@ RUN curl --output /tmp/k9s.tar.gz -sLf "https://github.com/derailed/k9s/releases
     echo "${!K9S_SUM}  /tmp/k9s.tar.gz" | sha256sum -c - && \
     tar -xvzf /tmp/k9s.tar.gz -C / k9s
 
-FROM registry.suse.com/bci/bci-base:${BCI_VERSION} as zypper
+FROM registry.suse.com/bci/bci-base:${BCI_VERSION} AS zypper
 
 # Creates the based dir for the target image, and hydrades it with the
 # original contents of the final image.
