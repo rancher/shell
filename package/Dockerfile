@@ -51,7 +51,7 @@ RUN curl --output /tmp/k9s.tar.gz -sLf "https://github.com/derailed/k9s/releases
 
 FROM registry.suse.com/bci/bci-base:${BCI_VERSION} AS zypper
 
-# Creates the based dir for the target image, and hydrades it with the
+# Creates the based dir for the target image, and hydrates it with the
 # original contents of the final image.
 RUN mkdir /chroot
 COPY --from=final / /chroot/
