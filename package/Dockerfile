@@ -1,7 +1,10 @@
-# Image that provides cross compilation tooling.
-FROM --platform=$BUILDPLATFORM rancher/mirrored-tonistiigi-xx:1.3.0 as xx
+ARG BCI_VERSION=15.6
+FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} AS final
 
-FROM --platform=$BUILDPLATFORM registry.suse.com/bci/golang:1.22 as helm
+# Image that provides cross compilation tooling.
+FROM --platform=$BUILDPLATFORM rancher/mirrored-tonistiigi-xx:1.3.0 AS xx
+
+FROM --platform=$BUILDPLATFORM registry.suse.com/bci/golang:1.22 AS helm
 
 # Clone repository once, and reuse it for target archs.
 ARG HELM_VERSION
@@ -17,7 +20,7 @@ RUN make -C /helm
 
 RUN xx-verify --static /helm/bin/helm
 
-FROM --platform=$BUILDPLATFORM registry.suse.com/bci/bci-base:15.5 AS build
+FROM --platform=$BUILDPLATFORM registry.suse.com/bci/bci-base:${BCI_VERSION} AS build
 RUN zypper -n install curl gzip tar
 
 # Define build arguments
@@ -44,26 +47,42 @@ RUN curl --output /tmp/kustomize.tar.gz -sLf "https://github.com/kubernetes-sigs
 ENV K9S_SUM="K9S_SUM_${TARGETARCH}"
 RUN curl --output /tmp/k9s.tar.gz -sLf "https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz" && \
     echo "${!K9S_SUM}  /tmp/k9s.tar.gz" | sha256sum -c - && \
-    tar -xvzf /tmp/k9s.tar.gz -C / k9s 
+    tar -xvzf /tmp/k9s.tar.gz -C / k9s
 
-FROM registry.suse.com/bci/bci-base:15.5 as final
-RUN zypper -n update && \
-    zypper -n install bash-completion gzip jq tar unzip vim wget && \
-    zypper clean -a && rm -rf /tmp/* /var/tmp/* /usr/share/doc/packages/* /usr/share/doc/manual/* /var/log/*
-RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /etc/passwd && \
-    echo 'shell:x:1000:' > /etc/group && \
-    mkdir /home/shell && \
-    echo '. /etc/profile.d/bash_completion.sh' >> /home/shell/.bashrc && \
-    echo 'alias k="kubectl"' >> /home/shell/.bashrc && \
-    echo 'alias ks="kubectl -n kube-system"' >> /home/shell/.bashrc && \
-    echo 'source <(kubectl completion bash)' >> /home/shell/.bashrc && \
-    echo 'complete -o default -F __start_kubectl k' >> /home/shell/.bashrc && \
-    echo 'LANG=en_US.UTF-8' >> /home/shell/.bashrc && \
-    echo 'PS1="> "' >> /home/shell/.bashrc && \
-    mkdir /home/shell/.kube && \
-    chown -R shell /home/shell && \
-    chmod 700 /run
+FROM registry.suse.com/bci/bci-base:${BCI_VERSION} AS zypper
 
+# Creates the based dir for the target image, and hydrates it with the
+# original contents of the final image.
+RUN mkdir /chroot
+COPY --from=final / /chroot/
+
+# The final image does not contain zypper, --installroot is used to
+# install all artefacts within a dir (/chroot) that can then be copied
+# over to a scratch image.
+RUN zypper --non-interactive refresh && \
+    zypper --installroot /chroot -n rm busybox-vi busybox-links && \
+    zypper --installroot /chroot -n in bash-completion jq vim curl && \
+    zypper --installroot /chroot clean -a && \
+    rm -rf /chroot/var/cache/zypp/* /chroot/var/log/zypp/* /chroot/etc/zypp/
+    
+
+RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /chroot/etc/passwd && \
+        echo 'shell:x:1000:' > /chroot/etc/group && \
+        mkdir /chroot/home/shell && \
+        echo '. /etc/profile.d/bash_completion.sh' >> /chroot/home/shell/.bashrc && \
+        echo 'alias k="kubectl"' >> /chroot/home/shell/.bashrc && \
+        echo 'alias ks="kubectl -n kube-system"' >> /chroot/home/shell/.bashrc && \
+        echo 'source <(kubectl completion bash)' >> /chroot/home/shell/.bashrc && \
+        echo 'complete -o default -F __start_kubectl k' >> /chroot/home/shell/.bashrc && \
+        echo 'LANG=en_US.UTF-8' >> /chroot/home/shell/.bashrc && \
+        echo 'PS1="> "' >> /chroot/home/shell/.bashrc && \
+        mkdir /chroot/home/shell/.kube && \
+        chown -R 1000:1000 /chroot/home/shell && \
+        chmod 700 /chroot/run
+
+FROM scratch
+
+COPY --from=zypper /chroot /
 COPY --chown=root:root --chmod=0755 --from=helm /helm/bin/helm /usr/local/bin/
 COPY --chown=root:root --chmod=0755 --from=build /kubectl /k9s /kustomize* /usr/local/bin/
 COPY --chown=root:root --chmod=0755 package/helm-cmd package/welcome /usr/local/bin/
