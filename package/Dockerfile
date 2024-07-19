@@ -1,6 +1,5 @@
 ARG BCI_VERSION=15.6
-ARG KUBERLR_VERSION="v2.0.0-rc.6"
-FROM --platform=$BUILDPLATFORM mallardduck/rancher-kuberlr:${KUBERLR_VERSION} AS kuberlr
+FROM --platform=$BUILDPLATFORM mallardduck/rancher-kuberlr-kubectl:v2.0.0-beta.2 AS kuberlr
 FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} AS final
 
 # Image that provides cross compilation tooling.
