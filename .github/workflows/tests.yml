@@ -2,6 +2,9 @@ name: Tests
 
 on:
   push:
+    branches:
+      - master
+      - release/v2.*
   pull_request:
 
 permissions:
