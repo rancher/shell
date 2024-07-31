@@ -1,7 +1,7 @@
 # renovate: datasource=github-release-attachments depName=rancher/helm
 HELM_VERSION := v3.13.3-rancher1
 
-KUBECTL_VERSION := v1.26.15
+KUBECTL_VERSION := v1.27.16
 KUBECTL_SUM_arm64 ?= $(shell curl -L "https://dl.k8s.io/release/$(KUBECTL_VERSION)/bin/linux/arm64/kubectl.sha256")
 KUBECTL_SUM_amd64 ?= $(shell curl -L "https://dl.k8s.io/release/$(KUBECTL_VERSION)/bin/linux/amd64/kubectl.sha256")
 KUBECTL_SUM_s390x ?= $(shell curl -L "https://dl.k8s.io/release/$(KUBECTL_VERSION)/bin/linux/s390x/kubectl.sha256")
