@@ -2,18 +2,22 @@ name: Release
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write # Upload artefacts to release.
   id-token: write # required by read-vault-secrets.
 
 jobs:
-
   publish-public:
     runs-on: ubuntu-latest
-    
     steps:
     - name: Load Secrets from Vault
       uses: rancher-eio/read-vault-secrets@main
@@ -32,7 +36,6 @@ jobs:
       uses: docker/setup-buildx-action@v3
     - name: Checkout code
       uses: actions/checkout@v4
-  
     - name: Build and push all image variations
       run: |
         make image-push
@@ -40,5 +43,5 @@ jobs:
         TAG="${TAG}-arm64" TARGET_PLATFORMS=linux/arm64 make image-push
         TAG="${TAG}-s390x" TARGET_PLATFORMS=linux/s390x make image-push
       env:
-        TAG: ${{ github.ref_name }}
+        TAG: ${{ github.ref == 'refs/heads/main' && 'head' || github.ref_name }}
         REPO: ${{ vars.PUBLIC_REGISTRY }}/${{ vars.PUBLIC_REGISTRY_REPO }}
