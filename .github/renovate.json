@@ -3,16 +3,25 @@
     "github>rancher/renovate-config#modigest"
   ],
   "baseBranches": [
-    "master",
-    "release/v2.9"
+    "main",
+    "release/v2.9",
+    "release/v2.8"
   ],
   "prHourlyLimit": 2,
   "packageRules": [
     {
+      "matchBaseBranches": ["main", "release/v2.8"],
       "matchDepNames": [
         "kubernetes/kubernetes"
       ],
-      "allowedVersions": "<1.25.0"
+      "allowedVersions": "<1.30.0"
+    },
+    {
+      "matchBaseBranches": ["release/v2.8"],
+      "matchDepNames": [
+        "kubernetes/kubernetes"
+      ],
+      "allowedVersions": "<1.28.0"
     }
   ]
 }

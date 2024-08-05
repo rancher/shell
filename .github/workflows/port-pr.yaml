@@ -12,6 +12,8 @@ env:
 
 jobs:
   port-pr:
+    permissions:
+      pull-requests: write
     runs-on: ubuntu-latest
     if: ${{ github.event.issue.pull_request && (startsWith(github.event.comment.body, '/backport') || startsWith(github.event.comment.body, '/forwardport')) }}
     steps:
