@@ -9,29 +9,32 @@ The `rancher/shell` image is used:
 ## Branches and Releases
 This is the current branch strategy for `rancher/shell`, it may change in the future.
 
-| Branch         | Tag      | Rancher           |
-|----------------|----------|-------------------|
-| `master`       | `v0.1.x` | `v2.7.x`,`v2.8.x` |
-| `release/v2.9` | `v0.2.x` | `v2.9.x`          |
+| Branch                | Tag      | Rancher                |
+|-----------------------|----------|------------------------|
+| `main`                | `head`   | `main` branch (`head`) |
+| `release/v2.9`        | `v0.2.x` | `v2.9.x`               |
+| `release/v2.8`        | `v0.1.x` | `v2.7.x`,`v2.8.x`      |
+| `master` (deprecated) | `v0.1.x` | `v2.7.x`,`v2.8.x`      |
 
-### v0.1.x Branch
-This branch supports Rancher 2.7/2.8 and spans supporting k8s 1.23 through 1.28.  
-Here are the current component versions and their k8s support:
+### Branch Info Overview
 
-| Component   | Version | Supported K8s               |
-|-------------|---------|-----------------------------|
-| `kubectl`   |`v1.26.x`| `1.25`,`1.26`,`1.27`        |
-| `kustomize` |`v5.4.x` |             n/a            |
-| `helm`      |`v3.13.3-rancher1`| `1.25`,`1.26`,`1.27`,`1.28` |
-| `k9s`       |`v0.32.4`| Uses `client-go` v0.29.3           |
+Each shell branch must constrain itself to use versions compatible with the respective Rancher releases.
+Specifically to ensure maximum possible compatibility with the k8s versions that the Rancher release it targets supports.
 
-### v0.2.x Branch
-This branch supports Rancher 2.9 and spans supporting k8s 1.27 through 1.30.  
-Here are the current component versions and their k8s support:
+Always refer to the [Support Compatability Matrix](https://www.suse.com/suse-rancher/support-matrix/) (or internal docs for future releases) as an official to ensure compatability.
+That said, here a quick visual reference (Aug 2024):
 
-| Component   | Version            | Supported K8s              |
-|-------------|--------------------|----------------------------|
-| `kubectl`   | `v1.28.x`          | `1.27`,`1.28`,`1.29`       |
-| `kustomize` | `v5.4.x`           |             n/a            |
-| `helm`      | `v3.14.3-rancher1` | `1.26`,`1.27`,`1.28`,`1.29`|
-| `k9s`       | `v0.32.4`          | Uses `client-go` v0.29.3   |
+
+```mermaid
+
+gantt
+    title k8s versions supported by `rancher/rancher`
+    todayMarker off
+    dateFormat X
+    axisFormat 1.%S
+    tickInterval 1second
+    section Rancher
+        2.7.X (EOL 18 Nov 2024)           :23,27
+        2.8.X           :25,28
+        2.9.X           :27,30
+```
