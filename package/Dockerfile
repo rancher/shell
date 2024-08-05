@@ -1,10 +1,10 @@
 ARG BCI_VERSION=15.6
-FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} as final
+FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} AS final
 
 # Image that provides cross compilation tooling.
-FROM --platform=$BUILDPLATFORM rancher/mirrored-tonistiigi-xx:1.3.0 as xx
+FROM --platform=$BUILDPLATFORM rancher/mirrored-tonistiigi-xx:1.3.0 AS xx
 
-FROM --platform=$BUILDPLATFORM registry.suse.com/bci/golang:1.22 as helm
+FROM --platform=$BUILDPLATFORM registry.suse.com/bci/golang:1.22 AS helm
 
 # Clone repository once, and reuse it for target archs.
 ARG HELM_VERSION
@@ -49,9 +49,9 @@ RUN curl --output /tmp/k9s.tar.gz -sLf "https://github.com/derailed/k9s/releases
     echo "${!K9S_SUM}  /tmp/k9s.tar.gz" | sha256sum -c - && \
     tar -xvzf /tmp/k9s.tar.gz -C / k9s
 
-FROM registry.suse.com/bci/bci-base:${BCI_VERSION} as zypper
+FROM registry.suse.com/bci/bci-base:${BCI_VERSION} AS zypper
 
-# Creates the based dir for the target image, and hydrades it with the
+# Creates the based dir for the target image, and hydrates it with the
 # original contents of the final image.
 RUN mkdir /chroot
 COPY --from=final / /chroot/
