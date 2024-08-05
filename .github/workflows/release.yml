@@ -7,15 +7,17 @@ on:
     tags:
       - 'v*'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write # Upload artefacts to release.
   id-token: write # required by read-vault-secrets.
 
 jobs:
-
   publish-public:
     runs-on: ubuntu-latest
-    
     steps:
     - name: Load Secrets from Vault
       uses: rancher-eio/read-vault-secrets@main
