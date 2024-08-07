@@ -10,11 +10,18 @@
   "prHourlyLimit": 2,
   "packageRules": [
     {
-      "matchBaseBranches": ["main", "release/v2.8"],
+      "matchBaseBranches": ["main"],
       "matchDepNames": [
         "kubernetes/kubernetes"
       ],
       "allowedVersions": "<1.30.0"
+    },
+    {
+      "matchBaseBranches": ["release/v2.9"],
+      "matchDepNames": [
+        "kubernetes/kubernetes"
+      ],
+      "allowedVersions": "<1.29.0"
     },
     {
       "matchBaseBranches": ["release/v2.8"],
