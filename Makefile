@@ -19,7 +19,7 @@ clean: ## clean up project.
 	rm -rf build
 
 test: test-build ## test the build against all target platforms.
-	$(MAKE) image-build
+	$(MAKE) build-image
 	IMAGE=$(IMAGE) \
 	KUBECTL_VERSION=$(KUBECTL_VERSION) HELM_VERSION=$(HELM_VERSION) \
 	KUSTOMIZE_VERSION=$(KUSTOMIZE_VERSION) K9S_VERSION=$(K9S_VERSION) \
@@ -28,15 +28,15 @@ test: test-build ## test the build against all target platforms.
 test-build:
 	# Instead of loading image, target all platforms, effectivelly testing
 	# the build for the target architectures.
-	$(MAKE) image-build BUILD_ACTION="--platform=$(TARGET_PLATFORMS)"
+	$(MAKE) build-image BUILD_ACTION="--platform=$(TARGET_PLATFORMS)"
 
-image-build: buildx-machine ## build (and load) the container image targeting the current platform.
+build-image: buildx-machine ## build (and load) the container image targeting the current platform.
 	$(IMAGE_BUILDER) build -f package/Dockerfile \
 		--builder $(MACHINE) $(IMAGE_ARGS) \
 		--build-arg VERSION=$(VERSION) -t "$(IMAGE)" $(BUILD_ACTION) .
 	@echo "Built $(IMAGE)"
 
-image-push: buildx-machine ## build the container image targeting all platforms defined by TARGET_PLATFORMS and push to a registry.
+push-image: buildx-machine ## build the container image targeting all platforms defined by TARGET_PLATFORMS and push to a registry.
 	$(IMAGE_BUILDER) build -f package/Dockerfile \
 		--builder $(MACHINE) $(IMAGE_ARGS) $(IID_FILE_FLAG) $(BUILDX_ARGS) \
 		--build-arg VERSION=$(VERSION) --platform=$(TARGET_PLATFORMS) -t "$(IMAGE)" --push .
