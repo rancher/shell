@@ -38,10 +38,10 @@ jobs:
       uses: actions/checkout@v4
     - name: Build and push all image variations
       run: |
-        make image-push
-        TAG="${TAG}-amd64" TARGET_PLATFORMS=linux/amd64 make image-push
-        TAG="${TAG}-arm64" TARGET_PLATFORMS=linux/arm64 make image-push
-        TAG="${TAG}-s390x" TARGET_PLATFORMS=linux/s390x make image-push
+        make push-image
+        TAG="${TAG}-amd64" TARGET_PLATFORMS=linux/amd64 make push-image
+        TAG="${TAG}-arm64" TARGET_PLATFORMS=linux/arm64 make push-image
+        TAG="${TAG}-s390x" TARGET_PLATFORMS=linux/s390x make push-image
       env:
         TAG: ${{ github.ref == 'refs/heads/main' && 'head' || github.ref_name }}
         REPO: ${{ vars.PUBLIC_REGISTRY }}/${{ vars.PUBLIC_REGISTRY_REPO }}
