@@ -4,6 +4,7 @@ set -eo pipefail
 
 RUNNER="${RUNNER:-docker}"
 IMAGE="${IMAGE:-rancher/shell:dev}"
+TEST_KUBECTL_VERSION="${1}"
 
 function run(){
     "${RUNNER}" run --rm "${IMAGE}" $1
@@ -31,6 +32,8 @@ function expected_file(){
 
 function check_files(){
     echo "checking expected binaries:"
+    expected_file "/bin/kuberlr" "0:0" "755"
+    expected_file "/bin/kubectl" "0:0" "777"
     expected_file "/usr/local/bin/helm" "0:0" "755"
     expected_file "/usr/local/bin/helm-cmd" "0:0" "755"
     expected_file "/usr/local/bin/k9s" "0:0" "755"
@@ -65,7 +68,7 @@ function check_versions(){
     expected_version "k9s" "${K9S_VERSION}"
     # --client=true is used so that it does not fail trying to
     # identify the server version.
-    expected_version "kubectl --client=true" "${KUBECTL_VERSION}"
+    expected_version "kubectl --client=true" "${TEST_KUBECTL_VERSION}"
 }
 
 function main(){
