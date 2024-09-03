@@ -21,9 +21,10 @@ clean: ## clean up project.
 test: test-build ## test the build against all target platforms.
 	$(MAKE) build-image
 	IMAGE=$(IMAGE) \
-	KUBECTL_VERSION=$(KUBECTL_VERSION) HELM_VERSION=$(HELM_VERSION) \
-	KUSTOMIZE_VERSION=$(KUSTOMIZE_VERSION) K9S_VERSION=$(K9S_VERSION) \
 		./hack/test
+	HELM_VERSION=$(HELM_VERSION) \
+	KUSTOMIZE_VERSION=$(KUSTOMIZE_VERSION) \
+	K9S_VERSION=$(K9S_VERSION) \
 
 test-build:
 	# Instead of loading image, target all platforms, effectivelly testing
