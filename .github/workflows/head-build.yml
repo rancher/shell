@@ -1,0 +1,78 @@
+name : Branch head Prerelease Images
+
+on:
+  push:
+    branches:
+      - main
+      - release/v[0-9]+.0
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write # Upload artefacts to release.
+
+env:
+  PUBLIC_REGISTRY: docker.io
+
+jobs:
+  prebuild-env:
+    name: Prebuild needed Env vars
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository to the runner
+        uses: actions/checkout@v4
+      - name: Set Branch Tag and Other Variables
+        id: set-vars
+        run: bash ./.github/scripts/branch-tags.sh >> $GITHUB_OUTPUT
+    outputs:
+      branch_tag: ${{ steps.set-vars.outputs.branch_tag }}
+      branch_static_tag: ${{ steps.set-vars.outputs.branch_static_tag }}
+      prev_tag: ${{ steps.set-vars.outputs.prev_tag }}
+
+  publish-public:
+    permissions:
+      contents: read
+      # write is needed for:
+      # - OIDC for cosign's use in ecm-distro-tools/publish-image.
+      # - Read vault secrets in rancher-eio/read-vault-secrets.
+      id-token: write
+
+    runs-on: ubuntu-latest
+    needs:
+      - prebuild-env
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: Load Secrets from Vault
+        uses: rancher-eio/read-vault-secrets@main
+        with:
+          secrets: |
+            secret/data/github/repo/${{ github.repository }}/dockerhub/rancher/credentials username | DOCKER_USERNAME ;
+            secret/data/github/repo/${{ github.repository }}/dockerhub/rancher/credentials password | DOCKER_PASSWORD ;
+
+      - name: Build and push all image variations
+        uses: rancher/ecm-distro-tools/actions/publish-image@master
+        with:
+          image: ${{ vars.IMAGE_NAME || 'shell' }}
+          tag: ${{ needs.prebuild-env.outputs.branch_static_tag }}
+          platforms: "linux/amd64,linux/arm64"
+
+          public-registry: ${{ env.PUBLIC_REGISTRY }}
+          public-repo: ${{ vars.REPO || github.repository_owner }}
+          public-username: ${{ env.DOCKER_USERNAME || vars.DOCKER_USERNAME || github.repository_owner }}
+          public-password: ${{ env.DOCKER_PASSWORD || secrets.DOCKER_PASSWORD }}
+
+          push-to-prime: false
+
+      - name: Re-tag the static head image using the rolling tag
+        env:
+          FULL_IMAGE_URL: ${{ env.PUBLIC_REGISTRY }}/${{ vars.REPO || github.repository_owner }}/${{ vars.IMAGE_NAME || 'shell' }}
+        run: |
+          VERSION="1.2.0"
+          curl -LO "https://github.com/oras-project/oras/releases/download/v${VERSION}/oras_${VERSION}_linux_amd64.tar.gz"
+          mkdir -p oras-install/
+          tar -zxf oras_${VERSION}_*.tar.gz -C oras-install/
+          oras-install/oras copy ${{ env.FULL_IMAGE_URL }}:${{ needs.prebuild-env.outputs.branch_static_tag }} ${{ env.FULL_IMAGE_URL }}:${{ needs.prebuild-env.outputs.branch_tag }}
