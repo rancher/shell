@@ -13,7 +13,7 @@ IMAGE = $(REPO)/shell:$(TAG)
 BUILD_ACTION = --load
 
 # Should always be the highest one in image
-TEST_KUBECTL_VERSION := 1.30.4
+TEST_KUBECTL_VERSION := 1.31.0
 
 .DEFAULT_GOAL := ci
 ci: test validate e2e ## run the targets needed to validate a PR in CI.
