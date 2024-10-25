@@ -2,7 +2,7 @@ ARG BCI_VERSION=15.6
 FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} AS final
 
 # Image that provides cross compilation tooling.
-FROM --platform=$BUILDPLATFORM rancher/mirrored-tonistiigi-xx:1.3.0 AS xx
+FROM --platform=$BUILDPLATFORM rancher/mirrored-tonistiigi-xx:1.5.0 AS xx
 
 FROM --platform=$BUILDPLATFORM registry.suse.com/bci/golang:1.22 AS helm
 
