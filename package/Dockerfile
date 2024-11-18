@@ -53,6 +53,7 @@ COPY --from=final / /chroot/
 # Setup repo needed to install k9s package
 RUN zypper --non-interactive ar https://download.opensuse.org/repositories/devel:kubic/15.6/devel:kubic.repo \
     && zypper --non-interactive ar https://download.opensuse.org/repositories/devel:/kubic/openSUSE_Factory_ARM/ devel_kubic_arm \
+    && zypper --non-interactive ar https://download.opensuse.org/repositories/devel:/kubic/openSUSE_Factory_zSystems/ devel_kubic_zed \
     && zypper --non-interactive --gpg-auto-import-keys refresh
 
 # The final image does not contain zypper, --installroot is used to
