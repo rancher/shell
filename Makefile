@@ -22,7 +22,7 @@ test: test-build ## test the build against all target platforms.
 	$(MAKE) build-image
 	IMAGE=$(IMAGE) \
 	KUBECTL_VERSION=$(KUBECTL_VERSION) HELM_VERSION=$(HELM_VERSION) \
-	KUSTOMIZE_VERSION=$(KUSTOMIZE_VERSION) K9S_VERSION=$(K9S_VERSION) \
+	KUSTOMIZE_VERSION=$(KUSTOMIZE_VERSION) \
 		./hack/test
 
 test-build:
