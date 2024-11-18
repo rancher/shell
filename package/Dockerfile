@@ -54,7 +54,8 @@ COPY --from=final / /chroot/
 RUN zypper --non-interactive ar https://download.opensuse.org/repositories/devel:kubic/15.6/devel:kubic.repo \
     && zypper --non-interactive ar https://download.opensuse.org/repositories/devel:/kubic/openSUSE_Factory_ARM/ devel_kubic_arm \
     && zypper --non-interactive ar https://download.opensuse.org/repositories/devel:/kubic/openSUSE_Factory_zSystems/ devel_kubic_zed \
-    && zypper --non-interactive --gpg-auto-import-keys refresh
+rpm --import https://download.opensuse.org/repositories/devel:/kubic/15.6/repodata/repomd.xml.key && \
+    && zypper --non-interactive refresh
 
 # The final image does not contain zypper, --installroot is used to
 # install all artefacts within a dir (/chroot) that can then be copied
