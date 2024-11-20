@@ -51,7 +51,7 @@ RUN mkdir /chroot
 COPY --from=final / /chroot/
 
 # Setup repo needed to install k9s package
-RUN zypper --non-interactive ar https://download.opensuse.org/repositories/devel:kubic/15.6/devel:kubic.repo \
+RUN zypper --non-interactive ar https://download.opensuse.org/repositories/devel:kubic/${BCI_VERSION}/devel:kubic.repo \
     && zypper --non-interactive ar https://download.opensuse.org/repositories/devel:/kubic/openSUSE_Factory_ARM/ devel_kubic_arm \
     && zypper --non-interactive ar https://download.opensuse.org/repositories/devel:/kubic/openSUSE_Factory_zSystems/ devel_kubic_zed \
     && rpm --import https://download.opensuse.org/repositories/devel:/kubic/${BCI_VERSION}/repodata/repomd.xml.key \
