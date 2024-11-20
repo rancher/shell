@@ -64,9 +64,7 @@ RUN zypper --non-interactive ar https://download.opensuse.org/repositories/devel
 # over to a scratch image.
 RUN zypper --non-interactive refresh && \
     zypper --installroot /chroot -n rm busybox-vi busybox-links && \
-    zypper --installroot /chroot -n in bash-completion jq vim curl k9s && \
-    zypper --installroot /chroot clean -a && \
-    rm -rf /chroot/var/cache/zypp/* /chroot/var/log/zypp/* /chroot/etc/zypp/
+    zypper --installroot /chroot -n in bash-completion jq vim curl k9s
     
 
 RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /chroot/etc/passwd && \
