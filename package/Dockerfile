@@ -54,7 +54,7 @@ COPY --from=final / /chroot/
 RUN zypper --non-interactive ar https://download.opensuse.org/repositories/devel:kubic/15.6/devel:kubic.repo \
     && zypper --non-interactive ar https://download.opensuse.org/repositories/devel:/kubic/openSUSE_Factory_ARM/ devel_kubic_arm \
     && zypper --non-interactive ar https://download.opensuse.org/repositories/devel:/kubic/openSUSE_Factory_zSystems/ devel_kubic_zed \
-    && rpm --import https://download.opensuse.org/repositories/devel:/kubic/15.6/repodata/repomd.xml.key \
+    && rpm --import https://download.opensuse.org/repositories/devel:/kubic/${BCI_VERSION}/repodata/repomd.xml.key \
             --import https://download.opensuse.org/repositories/devel:/kubic/openSUSE_Factory_ARM/repodata/repomd.xml.key \
             --import https://download.opensuse.org/repositories/devel:/kubic/openSUSE_Factory_zSystems/repodata/repomd.xml.key \
     && zypper --non-interactive refresh
