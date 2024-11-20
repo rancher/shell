@@ -43,27 +43,31 @@ RUN curl --output /tmp/kustomize.tar.gz -sLf "https://github.com/kubernetes-sigs
     echo "${!KUSTOMIZE_SUM}  /tmp/kustomize.tar.gz" | sha256sum -c - && \
     tar -xvzf /tmp/kustomize.tar.gz -C / kustomize
 
-# Stage k9s into build
-ENV K9S_SUM="K9S_SUM_${TARGETARCH}"
-RUN curl --output /tmp/k9s.tar.gz -sLf "https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz" && \
-    echo "${!K9S_SUM}  /tmp/k9s.tar.gz" | sha256sum -c - && \
-    tar -xvzf /tmp/k9s.tar.gz -C / k9s
-
 FROM registry.suse.com/bci/bci-base:${BCI_VERSION} AS zypper
+
+ARG BCI_VERSION=15.6
+ENV BCI_VERSION=${BCI_VERSION}
 
 # Creates the based dir for the target image, and hydrates it with the
 # original contents of the final image.
 RUN mkdir /chroot
 COPY --from=final / /chroot/
 
+# Setup repo needed to install k9s package
+RUN zypper --non-interactive ar https://download.opensuse.org/repositories/devel:kubic/${BCI_VERSION}/devel:kubic.repo \
+    && zypper --non-interactive ar https://download.opensuse.org/repositories/devel:/kubic/openSUSE_Factory_ARM/ devel_kubic_arm \
+    && zypper --non-interactive ar https://download.opensuse.org/repositories/devel:/kubic/openSUSE_Factory_zSystems/ devel_kubic_zed \
+    && rpm --import https://download.opensuse.org/repositories/devel:/kubic/${BCI_VERSION}/repodata/repomd.xml.key \
+            --import https://download.opensuse.org/repositories/devel:/kubic/openSUSE_Factory_ARM/repodata/repomd.xml.key \
+            --import https://download.opensuse.org/repositories/devel:/kubic/openSUSE_Factory_zSystems/repodata/repomd.xml.key \
+    && zypper --non-interactive refresh
+
 # The final image does not contain zypper, --installroot is used to
 # install all artefacts within a dir (/chroot) that can then be copied
 # over to a scratch image.
 RUN zypper --non-interactive refresh && \
     zypper --installroot /chroot -n rm busybox-vi busybox-links && \
-    zypper --installroot /chroot -n in bash-completion jq vim curl && \
-    zypper --installroot /chroot clean -a && \
-    rm -rf /chroot/var/cache/zypp/* /chroot/var/log/zypp/* /chroot/etc/zypp/
+    zypper --installroot /chroot -n in bash-completion jq vim curl k9s
     
 
 RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /chroot/etc/passwd && \
@@ -84,7 +88,7 @@ FROM scratch
 
 COPY --from=zypper /chroot /
 COPY --chown=root:root --chmod=0755 --from=helm /helm/bin/helm /usr/local/bin/
-COPY --chown=root:root --chmod=0755 --from=build /kubectl /k9s /kustomize* /usr/local/bin/
+COPY --chown=root:root --chmod=0755 --from=build /kubectl /kustomize* /usr/local/bin/
 COPY --chown=root:root --chmod=0755 package/helm-cmd package/welcome /usr/local/bin/
 COPY --chown=1000:1000 --chmod=0755 package/kustomize.sh /home/shell/
 
