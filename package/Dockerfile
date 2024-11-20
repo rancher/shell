@@ -45,6 +45,9 @@ RUN curl --output /tmp/kustomize.tar.gz -sLf "https://github.com/kubernetes-sigs
 
 FROM registry.suse.com/bci/bci-base:${BCI_VERSION} AS zypper
 
+ARG BCI_VERSION=15.6
+ENV BCI_VERSION=${BCI_VERSION}
+
 # Creates the based dir for the target image, and hydrates it with the
 # original contents of the final image.
 RUN mkdir /chroot
