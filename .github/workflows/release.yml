@@ -14,7 +14,6 @@ jobs:
       # - OIDC for cosign's use in ecm-distro-tools/publish-image.
       # - Read vault secrets in rancher-eio/read-vault-secrets.
       id-token: write
-    
     strategy:
       matrix:
         include:
@@ -28,7 +27,6 @@ jobs:
           # - amd64 manifest
           - tag-suffix: "-amd64"
             platforms: linux/amd64
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
