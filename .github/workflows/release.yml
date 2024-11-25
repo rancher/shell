@@ -14,24 +14,19 @@ jobs:
       # - OIDC for cosign's use in ecm-distro-tools/publish-image.
       # - Read vault secrets in rancher-eio/read-vault-secrets.
       id-token: write
-    
     strategy:
       matrix:
         include:
           # Four images are created:
-          # - Multi-arch manifest for amd64, arm64 and s390x
+          # - Multi-arch manifest for: amd64 and arm64
           - tag-suffix: ""
-            platforms: linux/amd64,linux/arm64,linux/s390x
+            platforms: linux/amd64,linux/arm64
           # - arm64 manifest
           - tag-suffix: "-arm64"
             platforms: linux/arm64
           # - amd64 manifest
           - tag-suffix: "-amd64"
             platforms: linux/amd64
-          # - s390x manifest
-          - tag-suffix: "-s390x"
-            platforms: linux/s390x
-    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
