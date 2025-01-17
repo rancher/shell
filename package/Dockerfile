@@ -4,13 +4,12 @@ FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} AS final
 # Image that provides cross compilation tooling.
 FROM --platform=$BUILDPLATFORM rancher/mirrored-tonistiigi-xx:1.5.0 AS xx
 
-FROM --platform=$BUILDPLATFORM registry.suse.com/bci/golang:1.22 AS helm
+FROM --platform=$BUILDPLATFORM registry.suse.com/bci/golang:1.23 AS helm
 
 # Clone repository once, and reuse it for target archs.
 ARG HELM_VERSION
-ADD --keep-git-dir=true https://github.com/rancher/helm.git#${HELM_VERSION} /helm
-RUN cd /helm && go mod download
-
+ADD --keep-git-dir=true https://github.com/helm/helm.git#${HELM_VERSION} /helm
+RUN cd /helm
 COPY --from=xx / /
 
 # Cross-compile instead of emulating the compilation on the target arch.
