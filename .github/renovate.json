@@ -15,28 +15,28 @@
       "matchDepNames": [
         "kubernetes/kubernetes"
       ],
-      "allowedVersions": "<1.33.0"
+      "allowedVersions": "<1.32.0"
     },
     {
       "matchBaseBranches": ["release/v2.10"],
       "matchDepNames": [
         "kubernetes/kubernetes"
       ],
-      "allowedVersions": "<1.32.0"
+      "allowedVersions": "<1.31.0"
     },
     {
       "matchBaseBranches": ["release/v2.9"],
       "matchDepNames": [
         "kubernetes/kubernetes"
       ],
-      "allowedVersions": "<1.30.0"
+      "allowedVersions": "<1.29.0"
     },
     {
       "matchBaseBranches": ["release/v2.8"],
       "matchDepNames": [
         "kubernetes/kubernetes"
       ],
-      "allowedVersions": "<1.29.0"
+      "allowedVersions": "<1.28.0"
     }
   ]
 }
