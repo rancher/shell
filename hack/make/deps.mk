@@ -11,11 +11,11 @@ KUSTOMIZE_SUM_arm64 := ad8ab62d4f6d59a8afda0eec4ba2e5cd2f86bf1afeea4b78d06daac94
 KUSTOMIZE_SUM_amd64 := 54e4031ddc4e7fc59e408da29e7c646e8e57b8088c51b84b3df0864f47b5148f
 
 # renovate: datasource=github-release-attachments depName=derailed/k9s
-K9S_VERSION := v0.32.7
-# renovate: datasource=github-release-attachments depName=derailed/k9s digestVersion=v0.32.7
-K9S_SUM_arm64 := b890a7a212a3fc69e6ea4b2a29d59f80ed501a27ad654c819a155cc7c3c6aa8d
-# renovate: datasource=github-release-attachments depName=derailed/k9s digestVersion=v0.32.7
-K9S_SUM_amd64 := 03934727bfbf39b1e61a74d8e045796cda2de14f8ce4c01df27f43d4494021de
+K9S_VERSION := v0.40.3
+# renovate: datasource=github-release-attachments depName=derailed/k9s digestVersion=v0.40.3
+K9S_SUM_arm64 := 355d96fffe64d71722046d16ba3754141c942d124ef3350c8508846a78079534
+# renovate: datasource=github-release-attachments depName=derailed/k9s digestVersion=v0.40.3
+K9S_SUM_amd64 := 6e9fbb670d2285d12d71d75efb1cb94a3271785e5c2cefdf0b590e232929ee8b
 
 # Reduces the code duplication on Makefile by keeping all args into a single variable.
 IMAGE_ARGS := --build-arg HELM_VERSION=$(HELM_VERSION) \
