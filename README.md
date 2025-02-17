@@ -9,12 +9,12 @@ The `rancher/shell` image is used:
 ## Branches and Releases
 This is the current branch strategy for `rancher/shell`, it may change in the future.
 
-| Branch                | Tag      | Rancher                |
-|-----------------------|----------|------------------------|
-| `main`                | `head`   | `main` branch (`head`) |
-| `release/v2.9`        | `v0.2.x` | `v2.9.x`               |
-| `release/v2.8`        | `v0.1.x` | `v2.7.x`,`v2.8.x`      |
-| `master` (deprecated) | `v0.1.x` | `v2.7.x`,`v2.8.x`      |
+| Branch          | Tag      | Rancher                |
+|-----------------|----------|------------------------|
+| `main`          | `head`   | `main` branch (`head`) |
+| `release/v2.10` | `v0.3.x` | `v2.10.x`              |
+| `release/v2.9`  | `v0.2.x` | `v2.9.x`               |
+| `release/v2.8`  | `v0.1.x` | `v2.8.x`               |
 
 ### Branch Info Overview
 
@@ -34,7 +34,8 @@ gantt
     axisFormat 1.%S
     tickInterval 1second
     section Rancher
-        2.7.X (EOL 18 Nov 2024)           :23,27
         2.8.X           :25,28
         2.9.X           :27,30
+        2.10.X           :28,31
+        2.11.X           :30,32
 ```
