@@ -13,13 +13,13 @@ KUSTOMIZE_SUM_amd64 := 54e4031ddc4e7fc59e408da29e7c646e8e57b8088c51b84b3df0864f4
 KUSTOMIZE_SUM_s390x := e633bddd040a1d1acedac655044c2d2bcbba048481662ff6035ea1205ee9a869
 
 # renovate: datasource=github-release-attachments depName=derailed/k9s
-K9S_VERSION := v0.40.6
-# renovate: datasource=github-release-attachments depName=derailed/k9s digestVersion=v0.40.6
-K9S_SUM_arm64 := 8def3d60a4210090a8e6ec2ae3917b09493c1c32de3acc8b44331ec8ab0068c9
-# renovate: datasource=github-release-attachments depName=derailed/k9s digestVersion=v0.40.6
-K9S_SUM_amd64 := dcc112e25041b3a228c3f5b8978bc5d3e46488be17a6f95d7116df5f88471c84
-# renovate: datasource=github-release-attachments depName=derailed/k9s digestVersion=v0.40.6
-K9S_SUM_s390x := a6bebef0208cccb35553c1c41b76b83c7ab650175b0b4da8e5590f15bde76a46
+K9S_VERSION := v0.40.10
+# renovate: datasource=github-release-attachments depName=derailed/k9s digestVersion=v0.40.10
+K9S_SUM_arm64 := b1f12af342fbd21d466463132fd57eb9175b40ab98b5c711d3b249d3f507fc91
+# renovate: datasource=github-release-attachments depName=derailed/k9s digestVersion=v0.40.10
+K9S_SUM_amd64 := 490bbfcb9314e59c0b1396e1d896786dc944fa9f83062296f454fef97aee0a54
+# renovate: datasource=github-release-attachments depName=derailed/k9s digestVersion=v0.40.10
+K9S_SUM_s390x := 7a4952955866eafbb7172af015c0f00976c5f789355175c238a77a31d9cbb576
 
 # Reduces the code duplication on Makefile by keeping all args into a single variable.
 IMAGE_ARGS := --build-arg HELM_VERSION=$(HELM_VERSION) \
