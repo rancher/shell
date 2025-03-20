@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+env:
+  PRIME_STAGING_REGISTRY: stgregistry.rancher.com
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -59,7 +62,7 @@ jobs:
         public-username: ${{ env.DOCKER_USERNAME }}
         public-password: ${{ env.DOCKER_PASSWORD }}
 
-        prime-registry: '<INSERT PRIME STAGING REGISTRY HERE>'
+        prime-registry: ${{ env.PRIME_STAGING_REGISTRY }}
         prime-repo: rancher
         prime-username: ${{ env.PRIME_REGISTRY_USERNAME }}
         prime-password: ${{ env.PRIME_REGISTRY_PASSWORD }}
