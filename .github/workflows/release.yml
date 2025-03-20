@@ -26,7 +26,25 @@ jobs:
           secret/data/github/repo/${{ github.repository }}/rancher-prime-registry/credentials registry | PRIME_REGISTRY ;
           secret/data/github/repo/${{ github.repository }}/rancher-prime-registry/credentials username | PRIME_REGISTRY_USERNAME ;
           secret/data/github/repo/${{ github.repository }}/rancher-prime-registry/credentials password | PRIME_REGISTRY_PASSWORD
-    - name: Build and push all image variations
+    - name: Check SemVer Characteristics
+      id: semver_check
+      run: |
+        tag="${{ github.ref_name }}"
+        has_prerelease() { [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+- ]]; }
+        has_build_meta() { [[ "$1" =~ \+ ]]; }
+
+        if has_prerelease "$tag"; then
+          echo "HAS_PRERELEASE=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "HAS_PRERELEASE=false" >> "$GITHUB_OUTPUT"
+        fi
+
+        if has_build_meta "$tag"; then
+          echo "HAS_BUILD_META=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "HAS_BUILD_META=false" >> "$GITHUB_OUTPUT"
+        fi
+    - name: Build and push image (DockerHub and PrimeStaging)
       uses: rancher/ecm-distro-tools/actions/publish-image@master
       with:
         image: shell
@@ -38,7 +56,19 @@ jobs:
         public-username: ${{ env.DOCKER_USERNAME }}
         public-password: ${{ env.DOCKER_PASSWORD }}
 
-        prime-registry: ${{ env.PRIME_REGISTRY }}
+        prime-registry: '<INSERT PRIME STAGING REGISTRY HERE>'
+        prime-repo: rancher
+        prime-username: ${{ env.PRIME_REGISTRY_USERNAME }}
+        prime-password: ${{ env.PRIME_REGISTRY_PASSWORD }}
+    - name: Build and push image (PrimeProd)
+      if: ${{ steps.semver_check.outputs.HAS_PRERELEASE == 'false' }}
+      uses: rancher/ecm-distro-tools/actions/publish-image@master
+      with:
+        image: shell
+        tag: ${{ github.ref_name }}
+        platforms: "linux/amd64,linux/arm64"
+
+        prime-registry: '<INSERT PRIME STAGING REGISTRY HERE>'
         prime-repo: rancher
         prime-username: ${{ env.PRIME_REGISTRY_USERNAME }}
         prime-password: ${{ env.PRIME_REGISTRY_PASSWORD }}
