@@ -14,19 +14,6 @@ jobs:
       # - OIDC for cosign's use in ecm-distro-tools/publish-image.
       # - Read vault secrets in rancher-eio/read-vault-secrets.
       id-token: write
-    strategy:
-      matrix:
-        include:
-          # Four images are created:
-          # - Multi-arch manifest for: amd64 and arm64
-          - tag-suffix: ""
-            platforms: linux/amd64,linux/arm64
-          # - arm64 manifest
-          - tag-suffix: "-arm64"
-            platforms: linux/arm64
-          # - amd64 manifest
-          - tag-suffix: "-amd64"
-            platforms: linux/amd64
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -43,8 +30,8 @@ jobs:
       uses: rancher/ecm-distro-tools/actions/publish-image@master
       with:
         image: shell
-        tag: ${{ github.ref_name }}${{ matrix.tag-suffix }}
-        platforms: ${{ matrix.platforms }}
+        tag: ${{ github.ref_name }}
+        platforms: "linux/amd64,linux/arm64"
 
         public-registry: docker.io
         public-repo: rancher
