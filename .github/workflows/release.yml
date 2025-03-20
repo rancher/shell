@@ -71,7 +71,9 @@ jobs:
         tag: ${{ github.ref_name }}
         platforms: "linux/amd64,linux/arm64"
 
-        prime-registry: '<INSERT PRIME STAGING REGISTRY HERE>'
+        push-to-public: false
+
+        prime-registry: ${{ env.PRIME_REGISTRY }}
         prime-repo: rancher
         prime-username: ${{ env.PRIME_REGISTRY_USERNAME }}
         prime-password: ${{ env.PRIME_REGISTRY_PASSWORD }}
