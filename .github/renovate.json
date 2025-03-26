@@ -1,6 +1,6 @@
 {
   "extends": [
-    "github>rancher/renovate-config#main"
+    "github>rancher/renovate-config#release"
   ],
   "baseBranches": [
     "main",
@@ -12,11 +12,11 @@
   "packageRules": [
     {
       "matchBaseBranches": ["main", "release/v2.11"],
-      "extends": ["github>rancher/renovate-config:rancher-main#main"]
+      "extends": ["github>rancher/renovate-config:rancher-main#release"]
     },
     {
       "matchBaseBranches": ["release/v2.10"],
-      "extends": ["github>rancher/renovate-config:rancher-2.10#main"]
+      "extends": ["github>rancher/renovate-config:rancher-2.10#release"]
     },
     {
       "matchBaseBranches": ["release/v2.10"],
