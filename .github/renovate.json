@@ -20,7 +20,7 @@
     },
     {
       "matchBaseBranches": ["release/v2.10"],
-      "extends": ["github>rancher/renovate-config:rancher-2.9#main"]
+      "extends": ["github>rancher/renovate-config:rancher-2.9#release"]
     }
   ]
 }
