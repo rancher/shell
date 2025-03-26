@@ -1,6 +1,6 @@
 {
   "extends": [
-    "github>rancher/renovate-config#modigest"
+    "github>rancher/renovate-config#main"
   ],
   "baseBranches": [
     "main",
