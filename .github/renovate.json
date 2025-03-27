@@ -1,42 +1,26 @@
 {
   "extends": [
-    "github>rancher/renovate-config#modigest"
+    "github>rancher/renovate-config#release"
   ],
   "baseBranches": [
     "main",
+    "release/v2.11",
     "release/v2.10",
-    "release/v2.9",
-    "release/v2.8"
+    "release/v2.9"
   ],
   "prHourlyLimit": 2,
   "packageRules": [
     {
-      "matchBaseBranches": ["main"],
-      "matchDepNames": [
-        "kubernetes/kubernetes"
-      ],
-      "allowedVersions": "<1.32.0"
+      "matchBaseBranches": ["main", "release/v2.11"],
+      "extends": ["github>rancher/renovate-config:rancher-main#release"]
     },
     {
       "matchBaseBranches": ["release/v2.10"],
-      "matchDepNames": [
-        "kubernetes/kubernetes"
-      ],
-      "allowedVersions": "<1.31.0"
+      "extends": ["github>rancher/renovate-config:rancher-2.10#release"]
     },
     {
-      "matchBaseBranches": ["release/v2.9"],
-      "matchDepNames": [
-        "kubernetes/kubernetes"
-      ],
-      "allowedVersions": "<1.29.0"
-    },
-    {
-      "matchBaseBranches": ["release/v2.8"],
-      "matchDepNames": [
-        "kubernetes/kubernetes"
-      ],
-      "allowedVersions": "<1.28.0"
+      "matchBaseBranches": ["release/v2.10"],
+      "extends": ["github>rancher/renovate-config:rancher-2.9#release"]
     }
   ]
 }
