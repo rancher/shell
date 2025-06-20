@@ -1,4 +1,4 @@
-ARG BCI_VERSION=15.6
+ARG BCI_VERSION=15.7
 FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} AS final
 
 # Image that provides cross compilation tooling.
