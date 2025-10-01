@@ -12,10 +12,10 @@ This is the current branch strategy for `rancher/shell`, it may change in the fu
 | Branch          | Tag      | Rancher                |
 |-----------------|----------|------------------------|
 | `main`          | `head`   | `main` branch (`head`) |
+| `release/v2.12` | `v0.5.x` | `v2.12.x`              |
 | `release/v2.11` | `v0.4.x` | `v2.11.x`              |
 | `release/v2.10` | `v0.3.x` | `v2.10.x`              |
 | `release/v2.9`  | `v0.2.x` | `v2.9.x`               |
-| `release/v2.8`  | `v0.1.x` | `v2.8.x`               |
 
 ### Branch Info Overview
 
@@ -35,8 +35,9 @@ gantt
     axisFormat 1.%S
     tickInterval 1second
     section Rancher
-        2.12.X           :31,33
-        2.11.X           :30,32
-        2.10.X           :28,31
-        2.9.X           :27,30
+        2.13.z           :32,34
+        2.12.z           :31,33
+        2.11.z           :30,32
+        2.10.z           :28,31
+        2.9.z           :27,30
 ```
