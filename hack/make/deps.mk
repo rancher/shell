@@ -1,5 +1,5 @@
 # renovate: datasource=github-release-attachments depName=rancher/helm
-HELM_VERSION := v3.18.3-rancher1
+HELM_VERSION := v3.18.4-rancher1
 
 # renovate-local: kubectl-amd64
 KUBECTL_VERSION := v1.33.1
