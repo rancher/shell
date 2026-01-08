@@ -76,8 +76,9 @@ RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /chroot/etc/passwd
         echo 'complete -o default -F __start_kubectl k' >> /chroot/home/shell/.bashrc && \
         echo 'LANG=en_US.UTF-8' >> /chroot/home/shell/.bashrc && \
         echo 'PS1="> "' >> /chroot/home/shell/.bashrc && \
-        chown -R 1000:1000 /chroot/home/shell && \
-        chmod 700 /chroot/run
+        mkdir -p /chroot/tmp && \
+        chmod 1777 /chroot/tmp && \
+        chown -R 1000:1000 /chroot/home/shell
 
 FROM scratch
 
