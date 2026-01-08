@@ -63,7 +63,7 @@ RUN zypper --non-interactive refresh && \
     zypper --installroot /chroot -n rm busybox-vi busybox-links && \
     zypper --installroot /chroot -n in bash-completion jq vim curl && \
     zypper --installroot /chroot clean -a && \
-    rm -rf /chroot/var/cache/zypp/* /chroot/var/log/zypp/* /chroot/etc/zypp/
+    rm -rf /chroot/var/cache/zypp/* /chroot/var/log/zypp/* /chroot/etc/zypp/ /chroot/run/zypp.pid
     
 
 RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /chroot/etc/passwd && \
