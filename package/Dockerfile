@@ -68,7 +68,7 @@ RUN zypper --non-interactive refresh && \
 
 RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /chroot/etc/passwd && \
         echo 'shell:x:1000:' > /chroot/etc/group && \
-        mkdir /chroot/home/shell && \
+        mkdir -p /chroot/home/shell/.kube /chroot/home/shell/helm-run && \
         echo '. /etc/profile.d/bash_completion.sh' >> /chroot/home/shell/.bashrc && \
         echo 'alias k="kubectl"' >> /chroot/home/shell/.bashrc && \
         echo 'alias ks="kubectl -n kube-system"' >> /chroot/home/shell/.bashrc && \
@@ -76,7 +76,6 @@ RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /chroot/etc/passwd
         echo 'complete -o default -F __start_kubectl k' >> /chroot/home/shell/.bashrc && \
         echo 'LANG=en_US.UTF-8' >> /chroot/home/shell/.bashrc && \
         echo 'PS1="> "' >> /chroot/home/shell/.bashrc && \
-        mkdir /chroot/home/shell/.kube && \
         chown -R 1000:1000 /chroot/home/shell && \
         chmod 700 /chroot/run
 
