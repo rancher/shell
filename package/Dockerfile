@@ -63,12 +63,12 @@ RUN zypper --non-interactive refresh && \
     zypper --installroot /chroot -n rm busybox-vi busybox-links && \
     zypper --installroot /chroot -n in bash-completion jq vim curl && \
     zypper --installroot /chroot clean -a && \
-    rm -rf /chroot/var/cache/zypp/* /chroot/var/log/zypp/* /chroot/etc/zypp/
+    rm -rf /chroot/var/cache/zypp/* /chroot/var/log/zypp/* /chroot/etc/zypp/ /chroot/run/zypp.pid
     
 
 RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /chroot/etc/passwd && \
         echo 'shell:x:1000:' > /chroot/etc/group && \
-        mkdir /chroot/home/shell && \
+        mkdir -p /chroot/home/shell/.kube /chroot/home/shell/helm-run && \
         echo '. /etc/profile.d/bash_completion.sh' >> /chroot/home/shell/.bashrc && \
         echo 'alias k="kubectl"' >> /chroot/home/shell/.bashrc && \
         echo 'alias ks="kubectl -n kube-system"' >> /chroot/home/shell/.bashrc && \
@@ -76,9 +76,9 @@ RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /chroot/etc/passwd
         echo 'complete -o default -F __start_kubectl k' >> /chroot/home/shell/.bashrc && \
         echo 'LANG=en_US.UTF-8' >> /chroot/home/shell/.bashrc && \
         echo 'PS1="> "' >> /chroot/home/shell/.bashrc && \
-        mkdir /chroot/home/shell/.kube && \
-        chown -R 1000:1000 /chroot/home/shell && \
-        chmod 700 /chroot/run
+        mkdir -p /chroot/tmp && \
+        chmod 1777 /chroot/tmp && \
+        chown -R 1000:1000 /chroot/home/shell
 
 FROM scratch
 
