@@ -12,6 +12,7 @@ This is the current branch strategy for `rancher/shell`, it may change in the fu
 | Branch          | Tag      | Rancher                |
 |-----------------|----------|------------------------|
 | `main`          | `head`   | `main` branch (`head`) |
+| `release/v2.13` | `v0.6.x` | `v2.13.x`              |
 | `release/v2.12` | `v0.5.x` | `v2.12.x`              |
 | `release/v2.11` | `v0.4.x` | `v2.11.x`              |
 | `release/v2.10` | `v0.3.x` | `v2.10.x`              |
