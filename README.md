@@ -26,18 +26,10 @@ Always refer to the [Support Compatability Matrix](https://www.suse.com/suse-ran
 That said, here a quick visual reference (Aug 2024):
 
 
-```mermaid
-
-gantt
-    title k8s versions supported by `rancher/rancher`
-    todayMarker off
-    dateFormat X
-    axisFormat 1.%S
-    tickInterval 1second
-    section Rancher
-        2.13.z           :32,34
-        2.12.z           :31,33
-        2.11.z           :30,32
-        2.10.z           :28,31
-        2.9.z           :27,30
-```
+| Rancher Version | k8s min | k8s max |
+|-----------------|---------|---------|
+| 2.14.x          | 1.33    | 1.35    |
+| 2.13.x          | 1.32    | 1.34    |
+| 2.12.x          | 1.31    | 1.33    |
+| 2.11.x          | 1.30    | 1.32    |
+| 2.10.x          | 1.28    | 1.31    |
