@@ -2,7 +2,7 @@
 HELM_VERSION := v3.19.0-rancher1
 
 # renovate-local: kubectl-amd64
-KUBECTL_VERSION := v1.34.3
+KUBECTL_VERSION := v1.35.0
 # renovate-local: kubectl-arm64=v1.34.3
 KUBECTL_SUM_arm64 := 46913a7aa0327f6cc2e1cc2775d53c4a2af5e52f7fd8dacbfbfd098e757f19e9
 # renovate-local: kubectl-amd64=v1.34.3
