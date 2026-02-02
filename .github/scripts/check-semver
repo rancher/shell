@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Usage:
-#   ./check_tag.sh [tag]
+#   ./check-semver [tag]
 # If no tag is provided, it uses GITHUB_REF_NAME environment variable.
 
 set -euo pipefail
