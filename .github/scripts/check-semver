@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+# Usage:
+#   ./check-semver [tag]
+# If no tag is provided, it uses GITHUB_REF_NAME environment variable.
+
+set -euo pipefail
+
+# Input: tag
+tag="${1:-${GITHUB_REF_NAME:-}}"
+
+if [[ -z "$tag" ]]; then
+  echo "Error: No tag provided and GITHUB_REF_NAME is not set." >&2
+  exit 1
+fi
+
+# Strip leading 'v' if present
+if [[ "$tag" == v* ]]; then
+  tag="${tag:1}"
+fi
+
+# Function to validate semver format (MAJOR.MINOR.PATCH with optional prerelease and build metadata)
+is_valid_semver() {
+  # Semver 2.0.0 regex pattern
+  # Matches: MAJOR.MINOR.PATCH[-PRERELEASE][+BUILD]
+  # where MAJOR, MINOR, PATCH are numeric (no leading zeros unless the number is 0)
+  local semver_regex='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$'
+  [[ "$1" =~ $semver_regex ]]
+}
+
+# Function to detect prerelease (e.g. 1.2.3-beta)
+has_prerelease() {
+  [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+- ]]
+}
+
+# Function to detect build metadata (e.g. 1.2.3+build.1)
+has_build_meta() {
+  [[ "$1" =~ \+ ]]
+}
+
+# Validate semver first
+if is_valid_semver "$tag"; then
+  echo "IS_SEMVER=true"
+else
+  echo "IS_SEMVER=false"
+  # Still output other flags for consistency, but they should be treated as unreliable
+fi
+
+# Output results to stdout
+if has_prerelease "$tag"; then
+  echo "HAS_PRERELEASE=true"
+else
+  echo "HAS_PRERELEASE=false"
+fi
+
+if has_build_meta "$tag"; then
+  echo "HAS_BUILD_META=true"
+else
+  echo "HAS_BUILD_META=false"
+fi
