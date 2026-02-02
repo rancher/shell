@@ -14,44 +14,55 @@ jobs:
       # - OIDC for cosign's use in ecm-distro-tools/publish-image.
       # - Read vault secrets in rancher-eio/read-vault-secrets.
       id-token: write
-    strategy:
-      matrix:
-        include:
-          # Four images are created:
-          # - Multi-arch manifest for: amd64 and arm64
-          - tag-suffix: ""
-            platforms: linux/amd64,linux/arm64
-          # - arm64 manifest
-          - tag-suffix: "-arm64"
-            platforms: linux/arm64
-          # - amd64 manifest
-          - tag-suffix: "-amd64"
-            platforms: linux/amd64
     steps:
-    - name: Checkout code
-      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
-    - name: Load Secrets from Vault
-      uses: rancher-eio/read-vault-secrets@main
-      with:
-        secrets: |
-          secret/data/github/repo/${{ github.repository }}/dockerhub/rancher/credentials username | DOCKER_USERNAME ;
-          secret/data/github/repo/${{ github.repository }}/dockerhub/rancher/credentials password | DOCKER_PASSWORD ;
-          secret/data/github/repo/${{ github.repository }}/rancher-prime-registry/credentials registry | PRIME_REGISTRY ;
-          secret/data/github/repo/${{ github.repository }}/rancher-prime-registry/credentials username | PRIME_REGISTRY_USERNAME ;
-          secret/data/github/repo/${{ github.repository }}/rancher-prime-registry/credentials password | PRIME_REGISTRY_PASSWORD
-    - name: Build and push all image variations
-      uses: rancher/ecm-distro-tools/actions/publish-image@master
-      with:
-        image: shell
-        tag: ${{ github.ref_name }}${{ matrix.tag-suffix }}
-        platforms: ${{ matrix.platforms }}
+      - name : "Read Secrets"
+        uses : rancher-eio/read-vault-secrets@main
+        with:
+          secrets: |
+            secret/data/github/repo/${{ github.repository }}/dockerhub/rancher/credentials username | DOCKER_USERNAME ;
+            secret/data/github/repo/${{ github.repository }}/dockerhub/rancher/credentials password | DOCKER_PASSWORD ;
+            secret/data/github/repo/${{ github.repository }}/rancher-prime-registry/credentials registry | PRIME_REGISTRY ;
+            secret/data/github/repo/${{ github.repository }}/rancher-prime-registry/credentials username | PRIME_REGISTRY_USERNAME ;
+            secret/data/github/repo/${{ github.repository }}/rancher-prime-registry/credentials password | PRIME_REGISTRY_PASSWORD ;
+            secret/data/github/repo/${{ github.repository }}/rancher-prime-stg-registry/credentials registry | PRIME_STG_REGISTRY ;
+            secret/data/github/repo/${{ github.repository }}/rancher-prime-stg-registry/credentials username | PRIME_STG_REGISTRY_USERNAME ;
+            secret/data/github/repo/${{ github.repository }}/rancher-prime-stg-registry/credentials password | PRIME_STG_REGISTRY_PASSWORD ;
+      - name : Checkout repository
+        uses : actions/checkout@v6
+      - name : Set up Go
+        uses : actions/setup-go@v6
+        with:
+          go-version: 1.23
+      - name: Check SemVer Characteristics
+        id: semver_check
+        run: bash ./.github/scripts/check-semver "${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+      - name: Build and push image to docker.io and Prime Staging Registry
+        uses: rancher/ecm-distro-tools/actions/publish-image@master
+        with:
+          image: shell
+          tag: ${{ github.ref_name }}
 
-        public-registry: docker.io
-        public-repo: rancher
-        public-username: ${{ env.DOCKER_USERNAME }}
-        public-password: ${{ env.DOCKER_PASSWORD }}
+          public-registry: docker.io
+          public-repo: rancher
+          public-username: ${{ env.DOCKER_USERNAME || vars.DOCKER_USERNAME || github.repository_owner }}
+          public-password: ${{ env.DOCKER_PASSWORD || secrets.DOCKER_PASSWORD }}
 
-        prime-registry: ${{ env.PRIME_REGISTRY }}
-        prime-repo: rancher
-        prime-username: ${{ env.PRIME_REGISTRY_USERNAME }}
-        prime-password: ${{ env.PRIME_REGISTRY_PASSWORD }}
+          push-to-prime: true
+          prime-registry: ${{ env.PRIME_STG_REGISTRY }}
+          prime-repo: rancher
+          prime-username: ${{ env.PRIME_STG_REGISTRY_USERNAME }}
+          prime-password: ${{ env.PRIME_STG_REGISTRY_PASSWORD }}
+      - name: Build and push image to Prime Prod Registry
+        if: ${{ steps.semver_check.outputs.HAS_PRERELEASE == 'false' }}
+        uses: rancher/ecm-distro-tools/actions/publish-image@master
+        with:
+          image: shell
+          tag: ${{ github.ref_name }}
+
+          push-to-public: false
+
+          push-to-prime: true
+          prime-registry: ${{ env.PRIME_REGISTRY }}
+          prime-repo: rancher
+          prime-username: ${{ env.PRIME_REGISTRY_USERNAME }}
+          prime-password: ${{ env.PRIME_REGISTRY_PASSWORD }}
