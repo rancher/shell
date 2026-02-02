@@ -50,7 +50,7 @@ jobs:
           prime-username: ${{ env.PRIME_STG_REGISTRY_USERNAME }}
           prime-password: ${{ env.PRIME_STG_REGISTRY_PASSWORD }}
       - name: Build and push image to Prime Prod Registry
-        if: steps.semver_check.outputs.HAS_PRERELEASE == 'false'
+        if: steps.semver_check.outputs.IS_SEMVER == 'true' && steps.semver_check.outputs.HAS_PRERELEASE == 'false'
         uses: rancher/ecm-distro-tools/actions/publish-image@master
         with:
           image: shell
