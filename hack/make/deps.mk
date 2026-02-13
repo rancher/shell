@@ -1,12 +1,12 @@
 # renovate: datasource=github-release-attachments depName=rancher/helm
-HELM_VERSION := v3.19.0-rancher1
+HELM_VERSION := v3.20.0-rancher1
 
 # renovate-local: kubectl-amd64
-KUBECTL_VERSION := v1.34.3
-# renovate-local: kubectl-arm64=v1.34.3
-KUBECTL_SUM_arm64 := 46913a7aa0327f6cc2e1cc2775d53c4a2af5e52f7fd8dacbfbfd098e757f19e9
-# renovate-local: kubectl-amd64=v1.34.3
-KUBECTL_SUM_amd64 := ab60ca5f0fd60c1eb81b52909e67060e3ba0bd27e55a8ac147cbc2172ff14212
+KUBECTL_VERSION := v1.35.1
+# renovate-local: kubectl-arm64=v1.35.1
+KUBECTL_SUM_arm64 := 706256e21a4e9192ee62d1a007ac0bfcff2b0b26e92cc7baad487a6a5d08ff82
+# renovate-local: kubectl-amd64=v1.35.1
+KUBECTL_SUM_amd64 := 36e2f4ac66259232341dd7866952d64a958846470f6a9a6a813b9117bd965207
 
 # renovate-local: kustomize-amd64
 KUSTOMIZE_VERSION := v5.6.0
