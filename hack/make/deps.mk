@@ -2,25 +2,25 @@
 HELM_VERSION := v3.18.4-rancher1
 
 # renovate-local: kubectl-amd64
-KUBECTL_VERSION := v1.33.5
-# renovate-local: kubectl-arm64=v1.33.5
-KUBECTL_SUM_arm64 := 6db7c5d846c3b3ddfd39f3137a93fe96af3938860eefdbf2429805ee1656e381
-# renovate-local: kubectl-amd64=v1.33.5
-KUBECTL_SUM_amd64 := 6a12d6c39e4a611a3687ee24d8c733961bb4bae1ae975f5204400c0a6930c6fc
+KUBECTL_VERSION := v1.33.9
+# renovate-local: kubectl-arm64=v1.33.9
+KUBECTL_SUM_arm64 := af4dc943a6f447ecb070340efe63c7f8ee2808e6c0bc42126efe7cde0cc1e69b
+# renovate-local: kubectl-amd64=v1.33.9
+KUBECTL_SUM_amd64 := 9e33e3234c0842cd44a12c13e334b4ce930145ea84b855ce7cc0a7b6bc670c22
 
 # renovate-local: kustomize-amd64
-KUSTOMIZE_VERSION := v5.6.0
-# renovate-local: kustomize-arm64=v5.6.0
-KUSTOMIZE_SUM_arm64 := ad8ab62d4f6d59a8afda0eec4ba2e5cd2f86bf1afeea4b78d06daac945eb0660
-# renovate-local: kustomize-amd64=v5.6.0
-KUSTOMIZE_SUM_amd64 := 54e4031ddc4e7fc59e408da29e7c646e8e57b8088c51b84b3df0864f47b5148f
+KUSTOMIZE_VERSION := v5.7.1
+# renovate-local: kustomize-arm64=v5.7.1
+KUSTOMIZE_SUM_arm64 := 4261a040217df3bd6896597c3986d1465925726e4f22a945304b5233a4dcdbda
+# renovate-local: kustomize-amd64=v5.7.1
+KUSTOMIZE_SUM_amd64 := ea375e7372f9aa029129d4b2d16c66b7750b7f1213c4f66f910d981c895818d8
 
 # renovate: datasource=github-release-attachments depName=derailed/k9s
-K9S_VERSION := v0.50.13
-# renovate: datasource=github-release-attachments depName=derailed/k9s digestVersion=v0.50.13
-K9S_SUM_arm64 := 52610fd5bcb3d0e998965f6d600d5a7bf5ef5971ce66ccb43dff16a7d10f1985
-# renovate: datasource=github-release-attachments depName=derailed/k9s digestVersion=v0.50.13
-K9S_SUM_amd64 := fceab00e9f7b47d5f3fcccccc2ffd5a15090fdb2345d45938828a1f6114e9a5e
+K9S_VERSION := v0.50.18
+# renovate: datasource=github-release-attachments depName=derailed/k9s digestVersion=v0.50.18
+K9S_SUM_arm64 := d3dcc051d6be26ee911c00f583412802ebe203a189e51bc079332cb410c83b38
+# renovate: datasource=github-release-attachments depName=derailed/k9s digestVersion=v0.50.18
+K9S_SUM_amd64 := 0b697ed4aa80997f7de4deeed6f1fba73df191b28bf691b1f28d2f45fa2a9e9b
 
 # Reduces the code duplication on Makefile by keeping all args into a single variable.
 IMAGE_ARGS := --build-arg HELM_VERSION=$(HELM_VERSION) \
