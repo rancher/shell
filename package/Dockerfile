@@ -1,30 +1,12 @@
 ARG BCI_VERSION=15.7
 FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} AS final
 
-# Image that provides cross compilation tooling.
-FROM --platform=$BUILDPLATFORM rancher/mirrored-tonistiigi-xx:1.6.1 AS xx
-
-FROM --platform=$BUILDPLATFORM registry.suse.com/bci/golang:1.25 AS helm
-
-# Clone repository once, and reuse it for target archs.
-ARG HELM_VERSION
-ADD --keep-git-dir=true https://github.com/rancher/helm.git#${HELM_VERSION} /helm
-RUN cd /helm && go mod download
-
-COPY --from=xx / /
-
-# Cross-compile instead of emulating the compilation on the target arch.
-ARG TARGETPLATFORM
-RUN xx-go --wrap && mkdir -p /run/lock
-RUN make -C /helm
-
-RUN xx-verify --static /helm/bin/helm
-
 FROM --platform=$BUILDPLATFORM registry.suse.com/bci/bci-base:${BCI_VERSION} AS build
 RUN zypper -n install curl gzip tar
 
 # Define build arguments
 ARG KUBECTL_VERSION KUBECTL_SUM_arm64 KUBECTL_SUM_amd64 \
+    HELM_VERSION HELM_SUM_arm64 HELM_SUM_amd64 \
     KUSTOMIZE_VERSION KUSTOMIZE_SUM_arm64 KUSTOMIZE_SUM_amd64 \
     K9S_VERSION K9S_SUM_arm64 K9S_SUM_amd64
 
@@ -36,6 +18,13 @@ ADD --chown=root:root --chmod=0755 \
 
 ENV KUBECTL_SUM="KUBECTL_SUM_${TARGETARCH}"
 RUN echo "${!KUBECTL_SUM}  /kubectl" | sha256sum -c -
+
+# Stage helm into build
+ADD "https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz" \
+    /tmp/helm.tar.gz
+ENV HELM_SUM="HELM_SUM_${TARGETARCH}"
+RUN echo "${!HELM_SUM}  /tmp/helm.tar.gz" | sha256sum -c - && \
+    tar -xvzf /tmp/helm.tar.gz --strip-components=1 -C / "linux-${TARGETARCH}/helm"
 
 # Stage kustomize into build
 ADD "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${TARGETARCH}.tar.gz" \
@@ -85,8 +74,7 @@ RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /chroot/etc/passwd
 FROM scratch
 
 COPY --from=zypper /chroot /
-COPY --chown=root:root --chmod=0755 --from=helm /helm/bin/helm /usr/local/bin/
-COPY --chown=root:root --chmod=0755 --from=build /kubectl /k9s /kustomize* /usr/local/bin/
+COPY --chown=root:root --chmod=0755 --from=build /kubectl /helm /k9s /kustomize* /usr/local/bin/
 COPY --chown=root:root --chmod=0755 package/helm-cmd package/welcome /usr/local/bin/
 COPY --chown=1000:1000 --chmod=0755 package/kustomize.sh /home/shell/
 

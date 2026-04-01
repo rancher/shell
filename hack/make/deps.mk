@@ -1,5 +1,9 @@
-# renovate: datasource=github-release-attachments depName=rancher/helm
-HELM_VERSION := v3.20.0-rancher1
+# renovate: datasource=github-release-attachments depName=helm/helm
+HELM_VERSION := v3.20.1
+# renovate: datasource=github-release-attachments depName=helm/helm digestVersion=v3.20.1
+HELM_SUM_arm64 := 56b9d1b0e0efbb739be6e68a37860ace8ec9c7d3e6424e3b55d4c459bc3a0401
+# renovate: datasource=github-release-attachments depName=helm/helm digestVersion=v3.20.1
+HELM_SUM_amd64 := 0165ee4a2db012cc657381001e593e981f42aa5707acdd50658326790c9d0dc3
 
 # renovate-local: kubectl-amd64
 KUBECTL_VERSION := v1.35.2
@@ -23,7 +27,7 @@ K9S_SUM_arm64 := d3dcc051d6be26ee911c00f583412802ebe203a189e51bc079332cb410c83b3
 K9S_SUM_amd64 := 0b697ed4aa80997f7de4deeed6f1fba73df191b28bf691b1f28d2f45fa2a9e9b
 
 # Reduces the code duplication on Makefile by keeping all args into a single variable.
-IMAGE_ARGS := --build-arg HELM_VERSION=$(HELM_VERSION) \
+IMAGE_ARGS := --build-arg HELM_VERSION=$(HELM_VERSION) --build-arg HELM_SUM_arm64=$(HELM_SUM_arm64) --build-arg HELM_SUM_amd64=$(HELM_SUM_amd64) \
 			  --build-arg KUBECTL_VERSION=$(KUBECTL_VERSION) --build-arg KUBECTL_SUM_arm64=$(KUBECTL_SUM_arm64) --build-arg KUBECTL_SUM_amd64=$(KUBECTL_SUM_amd64) \
 			  --build-arg KUSTOMIZE_VERSION=$(KUSTOMIZE_VERSION) --build-arg KUSTOMIZE_SUM_arm64=$(KUSTOMIZE_SUM_arm64) --build-arg KUSTOMIZE_SUM_amd64=$(KUSTOMIZE_SUM_amd64) \
 			  --build-arg K9S_VERSION=$(K9S_VERSION) --build-arg K9S_SUM_arm64=$(K9S_SUM_arm64) --build-arg K9S_SUM_amd64=$(K9S_SUM_amd64)
