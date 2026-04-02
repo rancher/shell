@@ -24,7 +24,7 @@ Each shell branch must constrain itself to use versions compatible with the resp
 Specifically to ensure maximum possible compatibility with the k8s versions that the Rancher release it targets supports.
 
 Always refer to the [Support Compatability Matrix](https://www.suse.com/suse-rancher/support-matrix/) (or internal docs for future releases) as an official to ensure compatability.
-That said, here a quick visual reference (Aug 2024):
+That said, here is a quick visual reference (April 2026):
 
 
 | Rancher Version | k8s min | k8s max |
