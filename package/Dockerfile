@@ -37,16 +37,18 @@ ADD --chown=root:root --chmod=0755 \
 ENV KUBECTL_SUM="KUBECTL_SUM_${TARGETARCH}"
 RUN echo "${!KUBECTL_SUM}  /kubectl" | sha256sum -c -
 
-# Stage kubectl into build
+# Stage kustomize into build
+ADD "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${TARGETARCH}.tar.gz" \
+    /tmp/kustomize.tar.gz
 ENV KUSTOMIZE_SUM="KUSTOMIZE_SUM_${TARGETARCH}"
-RUN curl --output /tmp/kustomize.tar.gz -sLf "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${TARGETARCH}.tar.gz" && \
-    echo "${!KUSTOMIZE_SUM}  /tmp/kustomize.tar.gz" | sha256sum -c - && \
+RUN echo "${!KUSTOMIZE_SUM}  /tmp/kustomize.tar.gz" | sha256sum -c - && \
     tar -xvzf /tmp/kustomize.tar.gz -C / kustomize
 
 # Stage k9s into build
+ADD "https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz" \
+    /tmp/k9s.tar.gz
 ENV K9S_SUM="K9S_SUM_${TARGETARCH}"
-RUN curl --output /tmp/k9s.tar.gz -sLf "https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz" && \
-    echo "${!K9S_SUM}  /tmp/k9s.tar.gz" | sha256sum -c - && \
+RUN echo "${!K9S_SUM}  /tmp/k9s.tar.gz" | sha256sum -c - && \
     tar -xvzf /tmp/k9s.tar.gz -C / k9s
 
 FROM registry.suse.com/bci/bci-base:${BCI_VERSION} AS zypper
