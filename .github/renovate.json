@@ -4,11 +4,11 @@
   ],
   "baseBranchPatterns": [
     "main",
+    "release/v2.14",
     "release/v2.13",
     "release/v2.12",
     "release/v2.11",
-    "release/v2.10",
-    "release/v2.9"
+    "release/v2.10"
   ],
   "prHourlyLimit": 2,
   "packageRules": [
@@ -18,6 +18,14 @@
       ],
       "extends": [
         "github>rancher/renovate-config:rancher-main#release"
+      ]
+    },
+    {
+      "matchBaseBranches": [
+        "release/v2.14"
+      ],
+      "extends": [
+        "github>rancher/renovate-config:rancher-2.14#release"
       ]
     },
     {
@@ -50,14 +58,6 @@
       ],
       "extends": [
         "github>rancher/renovate-config:rancher-2.10#release"
-      ]
-    },
-    {
-      "matchBaseBranches": [
-        "release/v2.9"
-      ],
-      "extends": [
-        "github>rancher/renovate-config:rancher-2.9#release"
       ]
     }
   ]
