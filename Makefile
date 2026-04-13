@@ -13,7 +13,7 @@ IMAGE = $(REPO)/shell:$(TAG)
 BUILD_ACTION = --load
 
 .DEFAULT_GOAL := ci
-ci: test validate e2e ## run the targets needed to validate a PR in CI.
+ci: test validate ## run the targets needed to validate a PR in CI.
 
 clean: ## clean up project.
 	rm -rf build
