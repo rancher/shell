@@ -1,8 +1,8 @@
 # renovate: datasource=github-release-attachments depName=helm/helm
-HELM_VERSION := v3.20.1
-# renovate: datasource=github-release-attachments depName=helm/helm digestVersion=v3.20.1
+HELM_VERSION := v4.1.4
+# renovate: datasource=github-release-attachments depName=helm/helm digestVersion=v4.1.4
 HELM_SUM_arm64 := 56b9d1b0e0efbb739be6e68a37860ace8ec9c7d3e6424e3b55d4c459bc3a0401
-# renovate: datasource=github-release-attachments depName=helm/helm digestVersion=v3.20.1
+# renovate: datasource=github-release-attachments depName=helm/helm digestVersion=v4.1.4
 HELM_SUM_amd64 := 0165ee4a2db012cc657381001e593e981f42aa5707acdd50658326790c9d0dc3
 
 # renovate-local: kubectl-amd64
