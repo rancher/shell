@@ -20,6 +20,8 @@ jobs:
   prebuild-env:
     name: Prebuild needed Env vars
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/rancher/ci-image/charts
     steps:
       - name: Check out the repository to the runner
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -40,6 +42,8 @@ jobs:
       id-token: write
 
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/rancher/ci-image/charts
     needs:
       - prebuild-env
     steps:
@@ -71,8 +75,4 @@ jobs:
         env:
           FULL_IMAGE_URL: ${{ env.PUBLIC_REGISTRY }}/${{ vars.REPO || github.repository_owner }}/${{ vars.IMAGE_NAME || 'shell' }}
         run: |
-          VERSION="1.2.0"
-          curl -LO "https://github.com/oras-project/oras/releases/download/v${VERSION}/oras_${VERSION}_linux_amd64.tar.gz"
-          mkdir -p oras-install/
-          tar -zxf oras_${VERSION}_*.tar.gz -C oras-install/
-          oras-install/oras copy ${{ env.FULL_IMAGE_URL }}:${{ needs.prebuild-env.outputs.branch_static_tag }} ${{ env.FULL_IMAGE_URL }}:${{ needs.prebuild-env.outputs.branch_tag }}
+          oras copy ${{ env.FULL_IMAGE_URL }}:${{ needs.prebuild-env.outputs.branch_static_tag }} ${{ env.FULL_IMAGE_URL }}:${{ needs.prebuild-env.outputs.branch_tag }}
