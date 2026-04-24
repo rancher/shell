@@ -3,11 +3,11 @@ HELM_SUM_arm64 := 5ea2d6bc2cda3f8edf985e028809f5a9278f404fb8ab24044de9b7cb9b79a6
 HELM_SUM_amd64 := 258e830a9e613c8a7a302d6059b4bb3b9758f2f3e1bb8ea0d707ce10a9a72fea
 
 # renovate-local: kubectl-amd64
-KUBECTL_VERSION := v1.35.2
-# renovate-local: kubectl-arm64=v1.35.2
-KUBECTL_SUM_arm64 := cd859449f54ad2cb05b491c490c13bb836cdd0886ae013c0aed3dd67ff747467
-# renovate-local: kubectl-amd64=v1.35.2
-KUBECTL_SUM_amd64 := 924eb50779153f20cb668117d141440b95df2f325a64452d78dff9469145e277
+KUBECTL_VERSION := v1.36.0
+# renovate-local: kubectl-arm64=v1.36.0
+KUBECTL_SUM_arm64 := 9f9d9c44a7b5264515ac9da5991584e2395bd50662e651132337e7b4d0c56f8f
+# renovate-local: kubectl-amd64=v1.36.0
+KUBECTL_SUM_amd64 := 123d8c8844f46b1244c547fffb3c17180c0c26dac9890589fe7e67763298748e
 
 # renovate: datasource=github-release-attachments depName=derailed/k9s
 K9S_VERSION := v0.50.18
