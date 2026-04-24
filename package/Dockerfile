@@ -25,7 +25,7 @@ RUN zypper -n install curl gzip tar
 
 # Define build arguments
 ARG KUBECTL_VERSION KUBECTL_SUM_arm64 KUBECTL_SUM_amd64 \
-    KUSTOMIZE_VERSION KUSTOMIZE_SUM_arm64 KUSTOMIZE_SUM_amd64 \
+    HELM_VERSION HELM_SUM_arm64 HELM_SUM_amd64 \
     K9S_VERSION K9S_SUM_arm64 K9S_SUM_amd64
 
 ARG TARGETARCH
@@ -37,12 +37,12 @@ ADD --chown=root:root --chmod=0755 \
 ENV KUBECTL_SUM="KUBECTL_SUM_${TARGETARCH}"
 RUN echo "${!KUBECTL_SUM}  /kubectl" | sha256sum -c -
 
-# Stage kustomize into build
-ADD "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${TARGETARCH}.tar.gz" \
-    /tmp/kustomize.tar.gz
-ENV KUSTOMIZE_SUM="KUSTOMIZE_SUM_${TARGETARCH}"
-RUN echo "${!KUSTOMIZE_SUM}  /tmp/kustomize.tar.gz" | sha256sum -c - && \
-    tar -xvzf /tmp/kustomize.tar.gz -C / kustomize
+# Stage helm into build
+ADD "https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz" \
+    /tmp/helm.tar.gz
+ENV HELM_SUM="HELM_SUM_${TARGETARCH}"
+RUN echo "${!HELM_SUM}  /tmp/helm.tar.gz" | sha256sum -c - && \
+    tar -xvzf /tmp/helm.tar.gz --strip-components=1 -C / "linux-${TARGETARCH}/helm"
 
 # Stage k9s into build
 ADD "https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz" \
@@ -66,7 +66,7 @@ RUN zypper --non-interactive refresh && \
     zypper --installroot /chroot -n in bash-completion jq vim curl && \
     zypper --installroot /chroot clean -a && \
     rm -rf /chroot/var/cache/zypp/* /chroot/var/log/zypp/* /chroot/etc/zypp/ /chroot/run/zypp.pid
-    
+
 
 RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /chroot/etc/passwd && \
         echo 'shell:x:1000:' > /chroot/etc/group && \
@@ -85,10 +85,8 @@ RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /chroot/etc/passwd
 FROM scratch
 
 COPY --from=zypper /chroot /
-COPY --chown=root:root --chmod=0755 --from=helm /helm/bin/helm /usr/local/bin/
-COPY --chown=root:root --chmod=0755 --from=build /kubectl /k9s /kustomize* /usr/local/bin/
-COPY --chown=root:root --chmod=0755 package/helm-cmd package/welcome /usr/local/bin/
-COPY --chown=1000:1000 --chmod=0755 package/kustomize.sh /home/shell/
+COPY --chown=root:root --chmod=0755 --from=build /kubectl /helm /k9s /usr/local/bin/
+COPY --chown=root:root --chmod=0755 package/helm-cmd package/welcome package/kustomize /usr/local/bin/
 
 USER 1000
 
