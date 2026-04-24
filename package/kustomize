@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+declare TRACE
+[[ "${TRACE}" == 1 ]] && set -o xtrace
+set -o errexit
+set -o nounset
+set -o pipefail
+set -o noclobber
+
+kustomize-proxy() {
+  exec kubectl kustomize "${@}"
+}
+
+args-parse() {
+  if [[ "$#" -eq 0 ]]; then
+    1>&2 printf "error: no subcommand given\n"
+    exit 1
+  fi
+
+  while [[ "$#" -gt 0 ]]; do
+    case "${1}" in
+    build)
+      shift
+      kustomize-proxy "${@}"
+      ;;
+    *)
+      1>&2 printf "error: subcommand \`%s\` not supported, only \`build\` is available\n" "${1}"
+      exit 1
+      ;;
+    esac
+  done
+}
+
+main() {
+  args-parse "$@"
+}
+
+main "$@"
