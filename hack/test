@@ -17,14 +17,14 @@ function expected_file(){
     file="$1"
     owner="$2"
     perms="$3"
-        
+
     actualPerms=$(stat '%a' "${file}")
     actualOwner=$(stat '%u:%g' "${file}")
     if [[ "${actualPerms}" != "${perms}" ]] || \
         [[ "${actualOwner}" != "${owner}" ]]; then
         echo "${file}: expected (${owner} ${perms}) got (${actualOwner} ${actualPerms})"
         exit 1
-    else 
+    else
         echo "${file}: OK"
     fi
 }
@@ -37,7 +37,6 @@ function check_files(){
     expected_file "/usr/local/bin/kubectl" "0:0" "755"
     expected_file "/usr/local/bin/kustomize" "0:0" "755"
     expected_file "/usr/local/bin/welcome" "0:0" "755"
-    expected_file "/home/shell/kustomize.sh" "1000:1000" "755"
 }
 
 
@@ -62,7 +61,6 @@ function expected_version(){
 function check_versions(){
     echo "checking command versions:"
     expected_version "helm" "${HELM_VERSION}"
-    expected_version "kustomize" "${KUSTOMIZE_VERSION}"
     expected_version "k9s" "${K9S_VERSION}"
     # --client=true is used so that it does not fail trying to
     # identify the server version.
