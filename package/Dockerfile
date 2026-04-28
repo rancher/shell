@@ -1,4 +1,4 @@
-ARG BCI_VERSION=15.7
+ARG BCI_VERSION=16.0
 FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} AS final
 
 FROM --platform=$BUILDPLATFORM registry.suse.com/bci/bci-base:${BCI_VERSION} AS build
