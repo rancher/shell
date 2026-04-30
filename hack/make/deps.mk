@@ -3,7 +3,7 @@ HELM_SUM_arm64 := 5ea2d6bc2cda3f8edf985e028809f5a9278f404fb8ab24044de9b7cb9b79a6
 HELM_SUM_amd64 := 258e830a9e613c8a7a302d6059b4bb3b9758f2f3e1bb8ea0d707ce10a9a72fea
 
 # renovate-local: kubectl-amd64
-KUBECTL_VERSION := v1.35.2
+KUBECTL_VERSION := v1.36.0
 # renovate-local: kubectl-arm64=v1.35.2
 KUBECTL_SUM_arm64 := cd859449f54ad2cb05b491c490c13bb836cdd0886ae013c0aed3dd67ff747467
 # renovate-local: kubectl-amd64=v1.35.2
