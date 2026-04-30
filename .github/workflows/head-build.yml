@@ -58,7 +58,7 @@ jobs:
             secret/data/github/repo/${{ github.repository }}/dockerhub/rancher/credentials password | DOCKER_PASSWORD ;
 
       - name: Build and push all image variations
-        uses: rancher/ecm-distro-tools/actions/publish-image@8821b2e4aa18f762dc334f811f54e8f215771a68 # v0.66.2
+        uses: rancher/ecm-distro-tools/actions/publish-image@dcb1a0f50ca91f9f9a1f34fa335a9182686234d5 # v0.66.3
         with:
           image: ${{ vars.IMAGE_NAME || 'shell' }}
           tag: ${{ needs.prebuild-env.outputs.branch_static_tag }}
