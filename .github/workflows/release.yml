@@ -36,7 +36,7 @@ jobs:
         id: semver_check
         run: bash ./.github/scripts/check-semver "${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
       - name: Build and push image to docker.io and Prime Staging Registry
-        uses: rancher/ecm-distro-tools/actions/publish-image@8821b2e4aa18f762dc334f811f54e8f215771a68 # v0.66.2
+        uses: rancher/ecm-distro-tools/actions/publish-image@dcb1a0f50ca91f9f9a1f34fa335a9182686234d5 # v0.66.3
         with:
           image: shell
           tag: ${{ github.ref_name }}
@@ -53,7 +53,7 @@ jobs:
           prime-password: ${{ env.PRIME_STG_REGISTRY_PASSWORD }}
       - name: Build and push image to Prime Prod Registry
         if: steps.semver_check.outputs.IS_SEMVER == 'true' && steps.semver_check.outputs.HAS_PRERELEASE == 'false'
-        uses: rancher/ecm-distro-tools/actions/publish-image@8821b2e4aa18f762dc334f811f54e8f215771a68 # v0.66.2
+        uses: rancher/ecm-distro-tools/actions/publish-image@dcb1a0f50ca91f9f9a1f34fa335a9182686234d5 # v0.66.3
         with:
           image: shell
           tag: ${{ github.ref_name }}
