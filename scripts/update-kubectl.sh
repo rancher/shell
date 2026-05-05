@@ -3,7 +3,7 @@
 # checksums in hack/make/deps.mk.
 #
 # Usage:
-#   ./scripts/update-kubectl.sh v1.35.3
+#   ./scripts/update-kubectl.sh v1.36.0
 #   ./scripts/update-kubectl.sh          # re-hashes whatever KUBECTL_VERSION is already set to
 
 set -euo pipefail
@@ -13,7 +13,7 @@ DEPS_MK="${SCRIPT_DIR}/../hack/make/deps.mk"
 
 usage() {
   echo "Usage: $0 [VERSION]"
-  echo "  VERSION  kubectl version to set, e.g. v1.35.3 (optional; defaults to current KUBECTL_VERSION)"
+  echo "  VERSION  kubectl version to set, e.g. v1.36.0 (optional; defaults to current KUBECTL_VERSION)"
   exit 1
 }
 
