@@ -37,12 +37,6 @@ ADD --chown=root:root --chmod=0755 \
 ENV KUBECTL_SUM="KUBECTL_SUM_${TARGETARCH}"
 RUN echo "${!KUBECTL_SUM}  /kubectl" | sha256sum -c -
 
-# Stage helm into build
-ADD "https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz" \
-    /tmp/helm.tar.gz
-ENV HELM_SUM="HELM_SUM_${TARGETARCH}"
-RUN echo "${!HELM_SUM}  /tmp/helm.tar.gz" | sha256sum -c - && \
-    tar -xvzf /tmp/helm.tar.gz --strip-components=1 -C / "linux-${TARGETARCH}/helm"
 
 # Stage k9s into build
 ADD "https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz" \
@@ -85,7 +79,8 @@ RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /chroot/etc/passwd
 FROM scratch
 
 COPY --from=zypper /chroot /
-COPY --chown=root:root --chmod=0755 --from=build /kubectl /helm /k9s /usr/local/bin/
+COPY --chown=root:root --chmod=0755 --from=helm /helm/bin/helm /usr/local/bin/
+COPY --chown=root:root --chmod=0755 --from=build /kubectl /k9s /usr/local/bin/
 COPY --chown=root:root --chmod=0755 package/helm-cmd package/welcome package/kustomize /usr/local/bin/
 
 USER 1000
