@@ -5,7 +5,7 @@ HELM_VERSION := v3.20.0-rancher1
 KUBECTL_VERSION := v1.33.12
 
 # renovate: datasource=github-release-attachments depName=derailed/k9s
-K9S_VERSION := v0.50.18
+K9S_VERSION := v0.51.0
 
 # Reduces the code duplication on Makefile by keeping all args into a single variable.
 IMAGE_ARGS := --build-arg HELM_VERSION=$(HELM_VERSION) \
