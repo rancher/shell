@@ -1,48 +1,67 @@
-ARG BCI_VERSION=15.7
+ARG BCI_VERSION=16.0
+ARG GO_IMAGE=rancher/hardened-build-base:v1.25.11b1
 FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} AS final
 
 # Image that provides cross compilation tooling.
 FROM --platform=$BUILDPLATFORM rancher/mirrored-tonistiigi-xx:1.6.1 AS xx
 
-FROM --platform=$BUILDPLATFORM registry.suse.com/bci/golang:1.25 AS helm
+FROM --platform=$BUILDPLATFORM ${GO_IMAGE} AS helm
 
 # Clone repository once, and reuse it for target archs.
 ARG HELM_VERSION
 ADD --keep-git-dir=true https://github.com/rancher/helm.git#${HELM_VERSION} /helm
-RUN cd /helm && go mod download
+RUN --mount=type=cache,target=/go/pkg/mod \
+    cd /helm && go mod download
 
 COPY --from=xx / /
 
 # Cross-compile instead of emulating the compilation on the target arch.
 ARG TARGETPLATFORM
 RUN xx-go --wrap && mkdir -p /run/lock
-RUN make -C /helm
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    make -C /helm
 
 RUN xx-verify --static /helm/bin/helm
 
-FROM --platform=$BUILDPLATFORM registry.suse.com/bci/bci-base:${BCI_VERSION} AS build
-RUN zypper -n install curl gzip tar
+FROM --platform=$BUILDPLATFORM ${GO_IMAGE} AS kubectl
 
-# Define build arguments
-ARG KUBECTL_VERSION KUBECTL_SUM_arm64 KUBECTL_SUM_amd64 \
-    HELM_VERSION HELM_SUM_arm64 HELM_SUM_amd64 \
-    K9S_VERSION K9S_SUM_arm64 K9S_SUM_amd64
+ARG KUBECTL_VERSION
+ADD https://github.com/kubernetes/kubernetes/archive/refs/tags/${KUBECTL_VERSION}.tar.gz /src.tar.gz
+RUN mkdir /src && tar -xzf /src.tar.gz -C /src --strip-components=1 && rm /src.tar.gz
 
-ARG TARGETARCH
-# Stage kubectl into build
-ADD --chown=root:root --chmod=0755 \
-    "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${TARGETARCH}/kubectl" \
-    /kubectl
+COPY --from=xx / /
+ARG TARGETPLATFORM
+RUN xx-go --wrap
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    cd /src && \
+    KUBE_GIT_VERSION=${KUBECTL_VERSION} \
+    KUBE_GIT_COMMIT=unknown \
+    KUBE_GIT_TREE_STATE=clean \
+    KUBE_BUILD_PLATFORMS=$(xx-info os)/$(xx-info arch) \
+    GOFLAGS="-tags=providerless" \
+    CGO_ENABLED=0 \
+    make WHAT=cmd/kubectl && \
+    cp /src/_output/local/bin/$(xx-info os)/$(xx-info arch)/kubectl /kubectl
+RUN xx-verify --static /kubectl
 
-ENV KUBECTL_SUM="KUBECTL_SUM_${TARGETARCH}"
-RUN echo "${!KUBECTL_SUM}  /kubectl" | sha256sum -c -
+FROM --platform=$BUILDPLATFORM ${GO_IMAGE} AS k9s
 
-# Stage k9s into build
-ADD "https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz" \
-    /tmp/k9s.tar.gz
-ENV K9S_SUM="K9S_SUM_${TARGETARCH}"
-RUN echo "${!K9S_SUM}  /tmp/k9s.tar.gz" | sha256sum -c - && \
-    tar -xvzf /tmp/k9s.tar.gz -C / k9s
+ARG K9S_VERSION
+ADD https://github.com/derailed/k9s/archive/refs/tags/${K9S_VERSION}.tar.gz /src.tar.gz
+RUN mkdir /src && tar -xzf /src.tar.gz -C /src --strip-components=1 && rm /src.tar.gz
+
+COPY --from=xx / /
+ARG TARGETPLATFORM
+RUN xx-go --wrap
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    cd /src && \
+    CGO_ENABLED=0 go build -trimpath \
+      -ldflags="-s -w -X github.com/derailed/k9s/cmd.version=${K9S_VERSION}" \
+      -o /k9s .
+RUN xx-verify --static /k9s
 
 FROM registry.suse.com/bci/bci-base:${BCI_VERSION} AS zypper
 
@@ -79,7 +98,8 @@ FROM scratch
 
 COPY --from=zypper /chroot /
 COPY --chown=root:root --chmod=0755 --from=helm /helm/bin/helm /usr/local/bin/
-COPY --chown=root:root --chmod=0755 --from=build /kubectl /k9s /usr/local/bin/
+COPY --chown=root:root --chmod=0755 --from=kubectl /kubectl /usr/local/bin/
+COPY --chown=root:root --chmod=0755 --from=k9s /k9s /usr/local/bin/
 COPY --chown=root:root --chmod=0755 package/helm-cmd package/welcome package/kustomize /usr/local/bin/
 
 USER 1000
