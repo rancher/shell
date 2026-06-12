@@ -2,6 +2,9 @@ ARG BCI_VERSION=16.0
 ARG GO_IMAGE=rancher/hardened-build-base:v1.26.4b1
 FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} AS final
 
+# Image that provides cross compilation tooling.
+FROM --platform=$BUILDPLATFORM rancher/mirrored-tonistiigi-xx:1.6.1 AS xx
+
 FROM --platform=$BUILDPLATFORM ${GO_IMAGE} AS kubectl
 
 ARG KUBECTL_VERSION

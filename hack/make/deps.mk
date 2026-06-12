@@ -6,7 +6,7 @@ HELM_SUM_amd64 := 97dbeb971be4ac4b27e3839976d9564c0fb35c6f3b1da89dd1e292d236af40
 KUBECTL_VERSION := v1.36.1
 
 # renovate: datasource=github-release-attachments depName=derailed/k9s
-K9S_VERSION := v0.50.18
+K9S_VERSION := v0.51.0
 
 # Reduces the code duplication on Makefile by keeping all args into a single variable.
 IMAGE_ARGS := --build-arg HELM_VERSION=$(HELM_VERSION) --build-arg HELM_SUM_arm64=$(HELM_SUM_arm64) --build-arg HELM_SUM_amd64=$(HELM_SUM_amd64) \
