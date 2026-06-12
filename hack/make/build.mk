@@ -1,6 +1,6 @@
 ifeq ($(VERSION),)
 	# Define VERSION, which is used for image tags or to bake it into the
-	# compiled binary to enable the printing of the application version, 
+	# compiled binary to enable the printing of the application version,
 	# via the --version flag.
 	CHANGES = $(shell git status --porcelain --untracked-files=no)
 	ifneq ($(CHANGES),)
