@@ -1,36 +1,59 @@
-ARG BCI_VERSION=15.7
+ARG BCI_VERSION=16.0
+ARG GO_IMAGE=rancher/hardened-build-base:v1.26.4b1
 FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} AS final
+
+FROM --platform=$BUILDPLATFORM ${GO_IMAGE} AS kubectl
+
+ARG KUBECTL_VERSION
+ADD https://github.com/kubernetes/kubernetes/archive/refs/tags/${KUBECTL_VERSION}.tar.gz /src.tar.gz
+RUN mkdir /src && tar -xzf /src.tar.gz -C /src --strip-components=1 && rm /src.tar.gz
+
+COPY --from=xx / /
+ARG TARGETPLATFORM
+RUN xx-go --wrap
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    cd /src && \
+    KUBE_GIT_VERSION=${KUBECTL_VERSION} \
+    KUBE_GIT_COMMIT=unknown \
+    KUBE_GIT_TREE_STATE=clean \
+    KUBE_BUILD_PLATFORMS=$(xx-info os)/$(xx-info arch) \
+    GOFLAGS="-tags=providerless" \
+    CGO_ENABLED=0 \
+    make WHAT=cmd/kubectl && \
+    cp /src/_output/local/bin/$(xx-info os)/$(xx-info arch)/kubectl /kubectl
+RUN xx-verify --static /kubectl
+
+FROM --platform=$BUILDPLATFORM ${GO_IMAGE} AS k9s
+
+ARG K9S_VERSION
+ADD https://github.com/derailed/k9s/archive/refs/tags/${K9S_VERSION}.tar.gz /src.tar.gz
+RUN mkdir /src && tar -xzf /src.tar.gz -C /src --strip-components=1 && rm /src.tar.gz
+
+COPY --from=xx / /
+ARG TARGETPLATFORM
+RUN xx-go --wrap
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    cd /src && \
+    CGO_ENABLED=0 go build -trimpath \
+      -ldflags="-s -w -X github.com/derailed/k9s/cmd.version=${K9S_VERSION}" \
+      -o /k9s .
+RUN xx-verify --static /k9s
 
 FROM --platform=$BUILDPLATFORM registry.suse.com/bci/bci-base:${BCI_VERSION} AS build
 RUN zypper -n install curl gzip tar
 
 # Define build arguments
-ARG KUBECTL_VERSION KUBECTL_SUM_arm64 KUBECTL_SUM_amd64 \
-    HELM_VERSION HELM_SUM_arm64 HELM_SUM_amd64 \
-    K9S_VERSION K9S_SUM_arm64 K9S_SUM_amd64
+ARG HELM_VERSION HELM_SUM_arm64 HELM_SUM_amd64
 
 ARG TARGETARCH
-# Stage kubectl into build
-ADD --chown=root:root --chmod=0755 \
-    "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${TARGETARCH}/kubectl" \
-    /kubectl
-
-ENV KUBECTL_SUM="KUBECTL_SUM_${TARGETARCH}"
-RUN echo "${!KUBECTL_SUM}  /kubectl" | sha256sum -c -
-
 # Stage helm into build
 ADD "https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz" \
     /tmp/helm.tar.gz
 ENV HELM_SUM="HELM_SUM_${TARGETARCH}"
 RUN echo "${!HELM_SUM}  /tmp/helm.tar.gz" | sha256sum -c - && \
     tar -xvzf /tmp/helm.tar.gz --strip-components=1 -C / "linux-${TARGETARCH}/helm"
-
-# Stage k9s into build
-ADD "https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz" \
-    /tmp/k9s.tar.gz
-ENV K9S_SUM="K9S_SUM_${TARGETARCH}"
-RUN echo "${!K9S_SUM}  /tmp/k9s.tar.gz" | sha256sum -c - && \
-    tar -xvzf /tmp/k9s.tar.gz -C / k9s
 
 FROM registry.suse.com/bci/bci-base:${BCI_VERSION} AS zypper
 
@@ -66,7 +89,9 @@ RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /chroot/etc/passwd
 FROM scratch
 
 COPY --from=zypper /chroot /
-COPY --chown=root:root --chmod=0755 --from=build /kubectl /helm /k9s /usr/local/bin/
+COPY --chown=root:root --chmod=0755 --from=kubectl /kubectl /usr/local/bin/
+COPY --chown=root:root --chmod=0755 --from=build /helm /usr/local/bin/
+COPY --chown=root:root --chmod=0755 --from=k9s /k9s /usr/local/bin/
 COPY --chown=root:root --chmod=0755 package/helm-cmd package/welcome package/kustomize /usr/local/bin/
 
 USER 1000
