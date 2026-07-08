@@ -7,15 +7,7 @@ ifeq ($(VERSION),)
 		DIRTY = -dirty
 	endif
 
-	# Prioritise DRONE_TAG for backwards compatibility. However, the git tag
-	# command should be able to gather the current tag, except when the git
-	# clone operation was done with "--no-tags".
-	ifneq ($(DRONE_TAG),)
-		GIT_TAG = $(DRONE_TAG)
-	else
-		GIT_TAG = $(shell git tag -l --contains HEAD | head -n 1)
-	endif
-
+	GIT_TAG = $(shell git tag -l --contains HEAD | head -n 1)
 	COMMIT = $(shell git rev-parse --short HEAD)
 	VERSION = $(COMMIT)$(DIRTY)
 
