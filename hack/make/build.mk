@@ -7,15 +7,7 @@ ifeq ($(VERSION),)
 		DIRTY = -dirty
 	endif
 
-	# Prioritise DRONE_TAG for backwards compatibility. However, the git tag
-	# command should be able to gather the current tag, except when the git
-	# clone operation was done with "--no-tags".
-	ifneq ($(DRONE_TAG),)
-		GIT_TAG = $(DRONE_TAG)
-	else
-		GIT_TAG = $(shell git tag -l --contains HEAD | head -n 1)
-	endif
-
+	GIT_TAG = $(shell git tag -l --contains HEAD | head -n 1)
 	COMMIT = $(shell git rev-parse --short HEAD)
 	VERSION = $(COMMIT)$(DIRTY)
 
@@ -43,7 +35,7 @@ endif
 # Define the target platforms that can be used across the ecosystem.
 # Note that what would actually be used for a given project will be
 # defined in TARGET_PLATFORMS, and must be a subset of the below:
-DEFAULT_PLATFORMS := linux/amd64,linux/arm64,linux/x390s,linux/riscv64
+DEFAULT_PLATFORMS := linux/amd64,linux/arm64
 
 .PHONY: help
 help: ## display Makefile's help.
