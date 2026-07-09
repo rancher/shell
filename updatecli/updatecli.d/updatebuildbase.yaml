@@ -69,7 +69,7 @@ scms:
       owner: '{{ .github.owner }}'
       repository: '{{ .github.repository }}'
       branch: '{{ .github.branch }}'
-      
+
 actions:
     default:
         title: 'Bump build base version to {{ source "latest_patch" }}'
