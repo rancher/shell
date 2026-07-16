@@ -31,10 +31,10 @@ function expected_file(){
 
 function check_files(){
     echo "checking expected binaries:"
-    expected_file "/usr/local/bin/helm" "0:0" "755"
+    expected_file "/usr/bin/helm" "0:0" "755"
+    expected_file "/usr/bin/k9s" "0:0" "755"
+    expected_file "/usr/bin/kubectl" "0:0" "755"
     expected_file "/usr/local/bin/helm-cmd" "0:0" "755"
-    expected_file "/usr/local/bin/k9s" "0:0" "755"
-    expected_file "/usr/local/bin/kubectl" "0:0" "755"
     expected_file "/usr/local/bin/kustomize" "0:0" "755"
     expected_file "/usr/local/bin/welcome" "0:0" "755"
 }
