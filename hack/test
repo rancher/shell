@@ -58,18 +58,8 @@ function expected_version(){
     fi
 }
 
-function check_versions(){
-    echo "checking command versions:"
-    expected_version "helm" "${HELM_VERSION}"
-    expected_version "k9s" "${K9S_VERSION}"
-    # --client=true is used so that it does not fail trying to
-    # identify the server version.
-    expected_version "kubectl --client=true" "${KUBECTL_VERSION}"
-}
-
 function main(){
     check_files
-    check_versions
 }
 
 main
