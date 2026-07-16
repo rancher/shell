@@ -39,25 +39,6 @@ function check_files(){
     expected_file "/usr/local/bin/welcome" "0:0" "755"
 }
 
-
-function expected_version(){
-    cmd="$1"
-    version="$2"
-
-    if [[ -z "${version}" ]]; then
-        echo "expected version for ${cmd} not set"
-        exit 1
-    fi
-
-    output=$(run "${cmd} version" 2> /dev/null)
-    if echo "${output}" | grep -q "${version}"; then
-        echo "${cmd} ${version}: OK"
-    else
-        echo "${cmd} expected ${version}: ${output}"
-        exit 1
-    fi
-}
-
 function main(){
     check_files
 }
