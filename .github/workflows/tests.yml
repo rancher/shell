@@ -1,11 +1,7 @@
 name: Tests
 
 on:
-  push:
-    branches:
-      - master
-      - release/v2.*
-  pull_request:
+  workflow_call:
 
 permissions:
   contents: read
