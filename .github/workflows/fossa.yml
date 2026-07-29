@@ -1,9 +1,7 @@
 name: FOSSA Scanning
 
 on:
-  push:
-    branches: ["main", "master", "release/**"]
-  workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
