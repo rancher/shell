@@ -1,0 +1,64 @@
+{
+  "extends": [
+    "github>rancher/renovate-config#release"
+  ],
+  "baseBranchPatterns": [
+    "main",
+    "release/v2.14",
+    "release/v2.13",
+    "release/v2.12",
+    "release/v2.11",
+    "release/v2.10"
+  ],
+  "prHourlyLimit": 2,
+  "packageRules": [
+    {
+      "matchBaseBranches": [
+        "main"
+      ],
+      "extends": [
+        "github>rancher/renovate-config:rancher-main#release"
+      ]
+    },
+    {
+      "matchBaseBranches": [
+        "release/v2.14"
+      ],
+      "extends": [
+        "github>rancher/renovate-config:rancher-2.14#release"
+      ]
+    },
+    {
+      "matchBaseBranches": [
+        "release/v2.13"
+      ],
+      "extends": [
+        "github>rancher/renovate-config:rancher-2.13#release"
+      ]
+    },
+    {
+      "matchBaseBranches": [
+        "release/v2.12"
+      ],
+      "extends": [
+        "github>rancher/renovate-config:rancher-2.12#release"
+      ]
+    },
+    {
+      "matchBaseBranches": [
+        "release/v2.11"
+      ],
+      "extends": [
+        "github>rancher/renovate-config:rancher-2.11#release"
+      ]
+    },
+    {
+      "matchBaseBranches": [
+        "release/v2.10"
+      ],
+      "extends": [
+        "github>rancher/renovate-config:rancher-2.10#release"
+      ]
+    }
+  ]
+}
