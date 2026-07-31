@@ -3,9 +3,6 @@ name : Branch head Prerelease Images
 on:
   workflow_call:
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 permissions:
   contents: write # Upload artefacts to release.
