@@ -5,6 +5,25 @@ FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} AS final
 # Image that provides cross compilation tooling.
 FROM --platform=$BUILDPLATFORM rancher/mirrored-tonistiigi-xx:1.6.1 AS xx
 
+FROM --platform=$BUILDPLATFORM ${GO_IMAGE} AS helm
+
+# Clone repository once, and reuse it for target archs.
+ARG HELM_VERSION
+ADD --keep-git-dir=true https://github.com/helm/helm.git#${HELM_VERSION} /helm
+RUN --mount=type=cache,target=/go/pkg/mod \
+    cd /helm && go mod download
+
+COPY --from=xx / /
+
+# Cross-compile instead of emulating the compilation on the target arch.
+ARG TARGETPLATFORM
+RUN xx-go --wrap && mkdir -p /run/lock
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    make -C /helm
+
+RUN xx-verify --static /helm/bin/helm
+
 FROM --platform=$BUILDPLATFORM ${GO_IMAGE} AS kubectl
 
 ARG KUBECTL_VERSION
@@ -44,20 +63,6 @@ RUN --mount=type=cache,target=/go/pkg/mod \
       -o /k9s .
 RUN xx-verify --static /k9s
 
-FROM --platform=$BUILDPLATFORM registry.suse.com/bci/bci-base:${BCI_VERSION} AS build
-RUN zypper -n install curl gzip tar
-
-# Define build arguments
-ARG HELM_VERSION HELM_SUM_arm64 HELM_SUM_amd64
-
-ARG TARGETARCH
-# Stage helm into build
-ADD "https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz" \
-    /tmp/helm.tar.gz
-ENV HELM_SUM="HELM_SUM_${TARGETARCH}"
-RUN echo "${!HELM_SUM}  /tmp/helm.tar.gz" | sha256sum -c - && \
-    tar -xvzf /tmp/helm.tar.gz --strip-components=1 -C / "linux-${TARGETARCH}/helm"
-
 FROM registry.suse.com/bci/bci-base:${BCI_VERSION} AS zypper
 
 # Creates the based dir for the target image, and hydrates it with the
@@ -93,9 +98,9 @@ FROM scratch
 
 COPY --from=zypper /chroot /
 COPY --chown=root:root --chmod=0755 --from=kubectl /kubectl /usr/local/bin/
-COPY --chown=root:root --chmod=0755 --from=build /helm /usr/local/bin/
+COPY --chown=root:root --chmod=0755 --from=helm /helm/bin/helm /usr/local/bin/
 COPY --chown=root:root --chmod=0755 --from=k9s /k9s /usr/local/bin/
-COPY --chown=root:root --chmod=0755 package/helm-cmd package/welcome package/kustomize /usr/local/bin/
+COPY --chown=root:root --chmod=0755 scripts/package/helm-cmd scripts/package/welcome scripts/package/kustomize /usr/local/bin/
 
 USER 1000
 
