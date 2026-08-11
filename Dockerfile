@@ -9,7 +9,7 @@ FROM --platform=$BUILDPLATFORM ${GO_IMAGE} AS helm
 
 # Clone repository once, and reuse it for target archs.
 ARG HELM_VERSION
-ADD --keep-git-dir=true https://github.com/rancher/helm.git#${HELM_VERSION} /helm
+ADD --keep-git-dir=true https://github.com/helm/helm.git#${HELM_VERSION} /helm
 RUN --mount=type=cache,target=/go/pkg/mod \
     cd /helm && go mod download
 
