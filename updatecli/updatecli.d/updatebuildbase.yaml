@@ -7,7 +7,7 @@ sources:
     name: Get current build base minor version from Dockerfile
     kind: dockerfile
     spec:
-      file: package/Dockerfile
+      file: Dockerfile
       instruction:
         keyword: ARG
         matcher: GO_IMAGE
@@ -51,7 +51,7 @@ targets:
     scmid: default
     sourceid: latest_patch
     spec:
-      file: package/Dockerfile
+      file: Dockerfile
       instruction:
         keyword: ARG
         matcher: "GO_IMAGE"

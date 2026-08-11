@@ -100,7 +100,7 @@ COPY --from=zypper /chroot /
 COPY --chown=root:root --chmod=0755 --from=kubectl /kubectl /usr/local/bin/
 COPY --chown=root:root --chmod=0755 --from=helm /helm/bin/helm /usr/local/bin/
 COPY --chown=root:root --chmod=0755 --from=k9s /k9s /usr/local/bin/
-COPY --chown=root:root --chmod=0755 package/helm-cmd package/welcome package/kustomize /usr/local/bin/
+COPY --chown=root:root --chmod=0755 scripts/package/helm-cmd scripts/package/welcome scripts/package/kustomize /usr/local/bin/
 
 USER 1000
 
