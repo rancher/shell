@@ -1,0 +1,38 @@
+name: Push to rancher/rancher
+description: Opens PRs against rancher/rancher updating the shell image tag after a new release.
+
+inputs:
+  tag:
+    description: 'Shell tag to sync (e.g. v0.8.1-rc.2)'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Read GitHub App Credentials from Vault
+      if: github.repository == 'rancher/shell'
+      uses: rancher-eio/read-vault-secrets@0da85151ad1f19ed7986c41587e45aac1ace74b6 # v3
+      with:
+        secrets: |
+          secret/data/github/repo/${{ github.repository }}/github/app-credentials appId | APPID;
+          secret/data/github/repo/${{ github.repository }}/github/app-credentials privateKey | PRIVATEKEY
+
+    - name: Generate GitHub App Token
+      if: github.repository == 'rancher/shell'
+      id: generate_token
+      uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+      with:
+        app-id: ${{ env.APPID }}
+        private-key: ${{ env.PRIVATEKEY }}
+        owner: ${{ github.repository_owner }}
+        repositories: rancher
+
+    - name: Push updates to rancher/rancher
+      if: github.repository == 'rancher/shell'
+      shell: bash
+      env:
+        TAG: ${{ inputs.tag }}
+        GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+        SOURCE_REPO: ${{ github.repository }}
+        RANCHER_DIR: ${{ github.workspace }}/rancher-repo
+      run: ${{ github.action_path }}/run.sh
