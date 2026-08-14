@@ -63,3 +63,17 @@ jobs:
           prime-repo: rancher
           prime-username: ${{ env.PRIME_REGISTRY_USERNAME }}
           prime-password: ${{ env.PRIME_REGISTRY_PASSWORD }}
+
+  push-to-rancher:
+    needs: publish
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/rancher/ci-image/go1.25
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Push updates to rancher/rancher
+        uses: rancher/shell/.github/actions/push-to-rancher@automation-core
+        with:
+          tag: ${{ github.ref_name }}
