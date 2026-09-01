@@ -39,10 +39,15 @@ sources:
         draft: false
         prerelease: false
       versionfilter:
-        kind: regex
-        # This searches for tags "v1.24.*"
-        # using the "1.24" value from the 'current_minor' source
-        pattern: 'v{{ source "current_minor" }}\.\S+'
+        kind: regex/semver
+        # Insert dot between 'b' and the build number for strict SemVer spec compliance:
+        # Converts 'v1.26.7b2' -> '1.26.7-b.2'
+        replaceall:
+          pattern: '^v([0-9]+\.[0-9]+\.[0-9]+)b([0-9]+)$'
+          replacement: '$1-b.$2'
+        # Group 1 extracts the full strict SemVer string ('1.26.7-b.2')
+        regex: '^([0-9]+\.[0-9]+\.[0-9]+-b\.[0-9]+)$'
+        pattern: '~{{ source "current_minor" }}.0-0'
 
 targets:
   dockerfile:
@@ -57,6 +62,10 @@ targets:
         matcher: "GO_IMAGE"
     transformers:
       - addprefix: "rancher/hardened-build-base:"
+      # Converts "1.26.7-b.2" back to the exact tag format "1.26.7b2"
+      - replacer:
+          pattern: '^([0-9]+\.[0-9]+\.[0-9]+)-b\.([0-9]+)$'
+          replacement: '$1b$2'
 
 scms:
   default:
