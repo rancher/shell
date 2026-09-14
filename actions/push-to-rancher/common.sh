@@ -4,6 +4,7 @@
 RANCHER_DIR="${RANCHER_DIR:-}"
 
 declare -A SHELL_MINOR_TO_RANCHER_BRANCH=(
+  ["0.9"]="release/v2.16"
   ["0.8"]="release/v2.15"
   ["0.7"]="release/v2.14"
   ["0.6"]="release/v2.13"
@@ -12,6 +13,7 @@ declare -A SHELL_MINOR_TO_RANCHER_BRANCH=(
   ["0.3"]="release/v2.10"
 )
 
+RANCHER_BRANCHES=()
 if [ -n "${TARGET_BRANCHES:-}" ]; then
   read -ra RANCHER_BRANCHES <<< "${TARGET_BRANCHES}"
 fi

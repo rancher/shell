@@ -20,7 +20,7 @@ require_rancher_dir
 
 SOURCE_REPO="${SOURCE_REPO:-rancher/shell}"
 
-if [ "${#RANCHER_BRANCHES[@]:-0}" -eq 0 ]; then
+if [ "${#RANCHER_BRANCHES[@]}" -eq 0 ]; then
   summary "- No target branches selected - nothing to do"
   exit 0
 fi
