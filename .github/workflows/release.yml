@@ -6,7 +6,18 @@ on:
       - 'v*'
 
 jobs:
+  check-semver:
+    runs-on: ubuntu-latest
+    outputs:
+      IS_SEMVER: ${{ steps.semver_check.outputs.IS_SEMVER }}
+      HAS_PRERELEASE: ${{ steps.semver_check.outputs.HAS_PRERELEASE }}
+    steps:
+      - name: Check SemVer Characteristics
+        id: semver_check
+        uses: rancher/shell/actions/check-semver@automation-core
+
   publish:
+    needs: check-semver
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/rancher/ci-image/charts
@@ -32,9 +43,6 @@ jobs:
       - name : Checkout repository
         uses : actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
-      - name: Check SemVer Characteristics
-        id: semver_check
-        uses: rancher/shell/actions/check-semver@automation-core
       - name: Build and push image to docker.io and Prime Staging Registry
         uses: rancher/ecm-distro-tools/actions/publish-image@8821b2e4aa18f762dc334f811f54e8f215771a68 # v0.66.2
         with:
@@ -52,7 +60,7 @@ jobs:
           prime-username: ${{ env.PRIME_STG_REGISTRY_USERNAME }}
           prime-password: ${{ env.PRIME_STG_REGISTRY_PASSWORD }}
       - name: Build and push image to Prime Prod Registry
-        if: steps.semver_check.outputs.IS_SEMVER == 'true' && steps.semver_check.outputs.HAS_PRERELEASE == 'false'
+        if: needs.check-semver.outputs.IS_SEMVER == 'true' && needs.check-semver.outputs.HAS_PRERELEASE == 'false'
         uses: rancher/ecm-distro-tools/actions/publish-image@8821b2e4aa18f762dc334f811f54e8f215771a68 # v0.66.2
         with:
           image: shell
