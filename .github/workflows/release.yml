@@ -41,10 +41,10 @@ jobs:
             secret/data/github/repo/${{ github.repository }}/rancher-prime-stg-registry/credentials username | PRIME_STG_REGISTRY_USERNAME ;
             secret/data/github/repo/${{ github.repository }}/rancher-prime-stg-registry/credentials password | PRIME_STG_REGISTRY_PASSWORD ;
       - name : Checkout repository
-        uses : actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses : actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Build and push image to docker.io and Prime Staging Registry
-        uses: rancher/ecm-distro-tools/actions/publish-image@8821b2e4aa18f762dc334f811f54e8f215771a68 # v0.66.2
+        uses: rancher/ecm-distro-tools/actions/publish-image@086cd2f90ed82712e45701441a00e59b95b578c1 # v0.77.1
         with:
           image: shell
           tag: ${{ github.ref_name }}
@@ -61,7 +61,7 @@ jobs:
           prime-password: ${{ env.PRIME_STG_REGISTRY_PASSWORD }}
       - name: Build and push image to Prime Prod Registry
         if: needs.check-semver.outputs.IS_SEMVER == 'true' && needs.check-semver.outputs.HAS_PRERELEASE == 'false'
-        uses: rancher/ecm-distro-tools/actions/publish-image@8821b2e4aa18f762dc334f811f54e8f215771a68 # v0.66.2
+        uses: rancher/ecm-distro-tools/actions/publish-image@086cd2f90ed82712e45701441a00e59b95b578c1 # v0.77.1
         with:
           image: shell
           tag: ${{ github.ref_name }}
