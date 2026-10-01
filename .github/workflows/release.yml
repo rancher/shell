@@ -44,7 +44,7 @@ jobs:
         uses : actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Build and push image to docker.io and Prime Staging Registry
-        uses: rancher/ecm-distro-tools/actions/publish-image@086cd2f90ed82712e45701441a00e59b95b578c1 # v0.77.1
+        uses: rancher/ecm-distro-tools/actions/publish-image@fdf1c26ea7f6c61b1cc8496a393788d9e9246b98 # v0.77.3
         with:
           image: shell
           tag: ${{ github.ref_name }}
@@ -61,7 +61,7 @@ jobs:
           prime-password: ${{ env.PRIME_STG_REGISTRY_PASSWORD }}
       - name: Build and push image to Prime Prod Registry
         if: needs.check-semver.outputs.IS_SEMVER == 'true' && needs.check-semver.outputs.HAS_PRERELEASE == 'false'
-        uses: rancher/ecm-distro-tools/actions/publish-image@086cd2f90ed82712e45701441a00e59b95b578c1 # v0.77.1
+        uses: rancher/ecm-distro-tools/actions/publish-image@fdf1c26ea7f6c61b1cc8496a393788d9e9246b98 # v0.77.3
         with:
           image: shell
           tag: ${{ github.ref_name }}
