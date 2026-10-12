@@ -1,7 +1,7 @@
 HELM_VERSION := v4.3.0
 
 # renovate-local: kubectl-amd64
-KUBECTL_VERSION := v1.37.0
+KUBECTL_VERSION := v1.37.1
 
 # renovate: datasource=github-release-attachments depName=derailed/k9s
 K9S_VERSION := v0.51.0
