@@ -14,7 +14,7 @@ runs:
       uses: rancher-eio/read-vault-secrets@0da85151ad1f19ed7986c41587e45aac1ace74b6 # v3
       with:
         secrets: |
-          secret/data/github/repo/${{ github.repository }}github/pr-actions-write-app/credentials appId | APP_ID;
+          secret/data/github/repo/${{ github.repository }}/github/pr-actions-write-app/credentials appId | APP_ID;
           secret/data/github/repo/${{ github.repository }}/github/pr-actions-write-app/credentials privateKey | PRIVATE_KEY
 
     - name: Generate GitHub App Token
