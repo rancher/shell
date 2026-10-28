@@ -29,14 +29,35 @@ function expected_file(){
     fi
 }
 
+function expected_link(){
+    local link="$1"
+    local target="$2"
+    local actualTarget
+
+    run "test -L ${link}"
+    actualTarget=$(run "readlink ${link}")
+    if [[ "${actualTarget}" != "${target}" ]]; then
+        echo "${link}: expected target ${target}, got ${actualTarget}"
+        exit 1
+    fi
+
+    run "test -f ${link}"
+    run "test -x ${link}"
+    echo "${link}: OK"
+}
+
 function check_files(){
     echo "checking expected binaries:"
-    expected_file "/usr/local/bin/helm" "0:0" "755"
+    expected_file "/usr/bin/helm4" "0:0" "755"
+    expected_file "/usr/bin/k9s" "0:0" "755"
+    expected_file "/usr/bin/kubectl-1.37" "0:0" "755"
     expected_file "/usr/local/bin/helm-cmd" "0:0" "755"
-    expected_file "/usr/local/bin/k9s" "0:0" "755"
-    expected_file "/usr/local/bin/kubectl" "0:0" "755"
     expected_file "/usr/local/bin/kustomize" "0:0" "755"
     expected_file "/usr/local/bin/welcome" "0:0" "755"
+
+    expected_link "/usr/local/bin/helm" "/usr/bin/helm4"
+    expected_link "/usr/local/bin/k9s" "/usr/bin/k9s"
+    expected_link "/usr/local/bin/kubectl" "/usr/bin/kubectl-1.37"
 }
 
 
