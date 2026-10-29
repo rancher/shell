@@ -1,7 +1,3 @@
-# To avoid poluting the Makefile, versions and checksums for tooling and 
-# dependencies are defined at hack/make/deps.mk.
-include hack/make/deps.mk
-
 # Include logic that can be reused across projects.
 include hack/make/build.mk
 
@@ -20,10 +16,7 @@ clean: ## clean up project.
 
 test: test-build ## test the build against all target platforms.
 	$(MAKE) build-image
-	IMAGE=$(IMAGE) \
-	KUBECTL_VERSION=$(KUBECTL_VERSION) HELM_VERSION=$(HELM_VERSION) \
-	KUSTOMIZE_VERSION=$(KUSTOMIZE_VERSION) K9S_VERSION=$(K9S_VERSION) \
-		./hack/test
+	IMAGE=$(IMAGE) ./hack/test
 
 test-build:
 	# Instead of loading image, target all platforms, effectivelly testing
@@ -31,13 +24,13 @@ test-build:
 	$(MAKE) build-image BUILD_ACTION="--platform=$(TARGET_PLATFORMS)"
 
 build-image: buildx-machine ## build (and load) the container image targeting the current platform.
-	$(IMAGE_BUILDER) build -f package/Dockerfile \
+	$(IMAGE_BUILDER) build -f Dockerfile \
 		--builder $(MACHINE) $(IMAGE_ARGS) \
 		--build-arg VERSION=$(VERSION) -t "$(IMAGE)" $(BUILD_ACTION) .
 	@echo "Built $(IMAGE)"
 
 push-image: buildx-machine ## build the container image targeting all platforms defined by TARGET_PLATFORMS and push to a registry.
-	$(IMAGE_BUILDER) build -f package/Dockerfile \
+	$(IMAGE_BUILDER) build -f Dockerfile \
 		--builder $(MACHINE) $(IMAGE_ARGS) $(IID_FILE_FLAG) $(BUILDX_ARGS) \
 		--build-arg VERSION=$(VERSION) --platform=$(TARGET_PLATFORMS) -t "$(IMAGE)" --push .
 	@echo "Pushed $(IMAGE)"
