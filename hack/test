@@ -51,6 +51,9 @@ function check_files(){
     expected_file "/usr/bin/helm4" "0:0" "755"
     expected_file "/usr/bin/k9s" "0:0" "755"
     expected_file "/usr/bin/kubectl-1.37" "0:0" "755"
+    expected_file "/usr/bin/kubectl-1.36" "0:0" "755"
+    expected_file "/usr/bin/kubectl-1.35" "0:0" "755"
+    expected_file "/usr/bin/kuberlr" "0:0" "755"
     expected_file "/usr/local/bin/helm-cmd" "0:0" "755"
     expected_file "/usr/local/bin/kustomize" "0:0" "755"
     expected_file "/usr/local/bin/welcome" "0:0" "755"
@@ -58,7 +61,7 @@ function check_files(){
     echo "checking expected links:"
     expected_link "/usr/local/bin/helm" "/usr/bin/helm4"
     expected_link "/usr/local/bin/k9s" "/usr/bin/k9s"
-    expected_link "/usr/local/bin/kubectl" "/usr/bin/kubectl-1.37"
+    expected_link "/usr/local/bin/kubectl" "/usr/bin/kuberlr"
 }
 
 function main(){
