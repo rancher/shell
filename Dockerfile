@@ -17,19 +17,26 @@ RUN zypper --non-interactive refresh && \
 
 RUN zypper ar -f https://rpm.rancher.io/pkgs/prime pkgs && \
     rpm --root /chroot --import https://raw.githubusercontent.com/rancher/rancher/refs/heads/main/rancher-rpm-pkgs.key && \
-    zypper --installroot /chroot -n in -r pkgs helm4 k9s kubectl-1.37
+    zypper --installroot /chroot -n in -r pkgs helm4 k9s kuberlr
+
+COPY kubectl-versions.txt /kubectl-versions.txt
+RUN while read -r version; do \
+        zypper --installroot /chroot -n in -r pkgs kubectl-${version} && \
+        ln -sf kubectl-${version} /chroot/usr/bin/kubectl${version}; \
+    done < /kubectl-versions.txt
 
 # The symbolic link target has no /chroot prefix.
-RUN ln -s /usr/bin/helm4        /chroot/usr/local/bin/helm && \
-    ln -s /usr/bin/k9s          /chroot/usr/local/bin/k9s && \
-    ln -s /usr/bin/kubectl-1.37 /chroot/usr/local/bin/kubectl
+RUN ln -s /usr/bin/helm4   /chroot/usr/local/bin/helm && \
+    ln -s /usr/bin/k9s     /chroot/usr/local/bin/k9s && \
+    ln -s /usr/bin/kuberlr /chroot/usr/local/bin/kubectl
 
 RUN zypper --installroot /chroot clean -a && \
     rm -rf /chroot/var/cache/zypp/* /chroot/var/log/zypp/* /chroot/etc/zypp/ /chroot/run/zypp.pid
 
 RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /chroot/etc/passwd && \
         echo 'shell:x:1000:' > /chroot/etc/group && \
-        mkdir -p /chroot/home/shell/.kube /chroot/home/shell/helm-run && \
+        mkdir -p /chroot/home/shell/.kube /chroot/home/shell/helm-run /chroot/home/shell/.kuberlr && \
+        echo 'AllowDownload = false' > /chroot/home/shell/.kuberlr/kuberlr.conf && \
         echo '. /etc/profile.d/bash_completion.sh' >> /chroot/home/shell/.bashrc && \
         echo 'alias k="kubectl"' >> /chroot/home/shell/.bashrc && \
         echo 'alias ks="kubectl -n kube-system"' >> /chroot/home/shell/.bashrc && \
