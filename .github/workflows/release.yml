@@ -43,6 +43,24 @@ jobs:
       - name : Checkout repository
         uses : actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
+      - name: Create draft GitHub release
+        env:
+          TAG_NAME: ${{ github.ref_name }}
+          HAS_PRERELEASE: ${{ needs.check-semver.outputs.HAS_PRERELEASE }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Skip creation if the release already exists (e.g. on a re-run).
+          if gh release view "${TAG_NAME}" >/dev/null 2>&1; then
+            echo "Release ${TAG_NAME} already exists; skipping creation."
+            exit 0
+          fi
+          args=(--draft --verify-tag --generate-notes --title "${TAG_NAME}")
+          if [ "${HAS_PRERELEASE}" = "true" ]; then
+            args+=(--prerelease)
+          fi
+          gh release create "${TAG_NAME}" "${args[@]}"
+
+
       - name: Build and push image to docker.io and Prime Staging Registry
         uses: rancher/ecm-distro-tools/actions/publish-image@086cd2f90ed82712e45701441a00e59b95b578c1 # v0.77.1
         with:
@@ -73,6 +91,13 @@ jobs:
           prime-repo: rancher
           prime-username: ${{ env.PRIME_REGISTRY_USERNAME }}
           prime-password: ${{ env.PRIME_REGISTRY_PASSWORD }}
+
+      - name: Publish the GitHub release
+        env:
+          TAG_NAME: ${{ github.ref_name }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release edit "${TAG_NAME}" --draft=false
 
   push-to-rancher:
     needs: publish
