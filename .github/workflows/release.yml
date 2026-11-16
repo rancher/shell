@@ -22,11 +22,13 @@ jobs:
     container:
       image: ghcr.io/rancher/ci-image/charts
     permissions:
-      contents: read
+      contents: write
       # write is needed for:
       # - OIDC for cosign's use in ecm-distro-tools/publish-image.
       # - Read vault secrets in rancher-eio/read-vault-secrets.
       id-token: write
+      packages: write
+      attestations: write
     steps:
       - name : "Read Secrets"
         uses : rancher-eio/read-vault-secrets@0da85151ad1f19ed7986c41587e45aac1ace74b6 # v3
