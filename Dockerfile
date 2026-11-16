@@ -1,8 +1,11 @@
 # syntax=docker/dockerfile:1
 ARG BCI_VERSION=16.1
-FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} AS final
+ARG USERNAME=shell
+ARG UID=1000
+ARG GID=1000
 
-FROM registry.suse.com/bci/bci-base:${BCI_VERSION} AS zypper
+FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} AS final
+FROM registry.suse.com/bci/bci-base:${BCI_VERSION} AS builder
 
 # Creates the based dir for the target image, and hydrates it with the
 # original contents of the final image.
@@ -31,30 +34,40 @@ RUN ln -s /usr/bin/helm4   /chroot/usr/local/bin/helm && \
     ln -s /usr/bin/k9s     /chroot/usr/local/bin/k9s && \
     ln -s /usr/bin/kuberlr /chroot/usr/local/bin/kubectl
 
+# Cleanup Zypper
 RUN zypper --installroot /chroot clean -a && \
-    rm -rf /chroot/var/cache/zypp/* /chroot/var/log/zypp/* /chroot/etc/zypp/ /chroot/run/zypp.pid
+    rm -rf /chroot/var/cache/zypp/* /chroot/var/log/zypp/* /chroot/etc/zypp/ \
+              /chroot/usr/share/doc /chroot/usr/share/man
 
-RUN echo 'shell:x:1000:1000:shell,,,:/home/shell:/bin/bash' > /chroot/etc/passwd && \
-        echo 'shell:x:1000:' > /chroot/etc/group && \
-        mkdir -p /chroot/home/shell/.kube /chroot/home/shell/helm-run /chroot/home/shell/.kuberlr && \
-        echo 'AllowDownload = false' > /chroot/home/shell/.kuberlr/kuberlr.conf && \
-        echo '. /etc/profile.d/bash_completion.sh' >> /chroot/home/shell/.bashrc && \
-        echo 'alias k="kubectl"' >> /chroot/home/shell/.bashrc && \
-        echo 'alias ks="kubectl -n kube-system"' >> /chroot/home/shell/.bashrc && \
-        echo 'source <(kubectl completion bash)' >> /chroot/home/shell/.bashrc && \
-        echo 'complete -o default -F __start_kubectl k' >> /chroot/home/shell/.bashrc && \
-        echo 'LANG=en_US.UTF-8' >> /chroot/home/shell/.bashrc && \
-        echo 'PS1="> "' >> /chroot/home/shell/.bashrc && \
+# Setup kubrlr and kubectl configs
+COPY scripts/package/bash.bashrc /chroot/etc/bash.bashrc
+RUN chroot /chroot /usr/bin/kuberlr completion bash \
+        > /chroot/etc/kuberlr-completion.bash && \
+    chroot /chroot /usr/local/bin/kubectl completion bash \
+            > /chroot/etc/kubectl-completion.bash
+
+# Setup user and perms
+RUN groupadd -g "${GID}" "${USERNAME}" && \
+    useradd -m -u "${UID}" -g "${GID}" -s /bin/bash "${USERNAME}"
+COPY --chown=${UID}:${GID} scripts/package/kuberlr.conf /home/${USERNAME}/.kuberlr/kuberlr.conf
+
+RUN mkdir -p /chroot/home/${USERNAME}/.kube /chroot/home/${USERNAME}/helm-run /chroot/home/${USERNAME}/.kuberlr && \
         mkdir -p /chroot/tmp && \
-        chmod 1777 /chroot/tmp && \
-        chown -R 1000:1000 /chroot/home/shell
+        chmod 1777 /chroot/tmp &&
 
 FROM scratch
+ARG USERNAME
+ARG UID
+ARG GID
 
-COPY --from=zypper /chroot /
+COPY --from=builder /chroot /
+COPY --from=builder /etc/passwd /etc/group /etc/shadow /etc/
+
+RUN install -d -o ${UID} -g ${GID} -m 0750 /home/${USERNAME}
+COPY --from=builder --chown=${UID}:${GID} /home/${USERNAME} /home/${USERNAME}
 COPY --chown=root:root --chmod=0755 scripts/package/helm-cmd scripts/package/welcome scripts/package/kustomize /usr/local/bin/
 
-USER 1000
-
-WORKDIR /home/shell
+USER ${UID}:${GID}
+WORKDIR /home/${USERNAME}
+ENV HOME=/home/${USERNAME}
 CMD ["welcome"]
