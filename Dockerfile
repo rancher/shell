@@ -7,6 +7,12 @@ ARG GID=1000
 FROM registry.suse.com/bci/bci-busybox:${BCI_VERSION} AS final
 FROM registry.suse.com/bci/bci-base:${BCI_VERSION} AS builder
 
+ARG USERNAME
+ARG UID
+ARG GID
+ARG TARGETPLATFORM
+ARG TARGETARCH
+
 # Creates the based dir for the target image, and hydrates it with the
 # original contents of the final image.
 RUN mkdir /chroot
@@ -52,8 +58,7 @@ RUN groupadd -g "${GID}" "${USERNAME}" && \
 COPY --chown=${UID}:${GID} scripts/package/kuberlr.conf /home/${USERNAME}/.kuberlr/kuberlr.conf
 
 RUN mkdir -p /chroot/home/${USERNAME}/.kube /chroot/home/${USERNAME}/helm-run /chroot/home/${USERNAME}/.kuberlr && \
-        mkdir -p /chroot/tmp && \
-        chmod 1777 /chroot/tmp &&
+        mkdir -p /chroot/tmp && chmod 1777 /chroot/tmp
 
 FROM scratch
 ARG USERNAME
