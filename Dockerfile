@@ -10,6 +10,10 @@ COPY --from=final / /chroot/
 # The final image does not contain zypper, --installroot is used to
 # install all artefacts within a dir (/chroot) that can then be copied
 # over to a scratch image.
+# CACHE_KEY (commit + tags) is declared here, not at the top, so a change
+# invalidates the cache from the first RPM install onward and picks up newer
+# packages, while the layers above stay cached.
+ARG CACHE_KEY
 RUN zypper --non-interactive refresh && \
   zypper --installroot /chroot -n rm busybox-vi busybox-links && \
   zypper --installroot /chroot -n in bash-completion jq vim curl
