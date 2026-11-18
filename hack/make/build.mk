@@ -20,6 +20,12 @@ ifeq ($(VERSION),)
 	endif
 endif
 
+# CACHE_KEY is passed to the Dockerfile to invalidate the cache of the layers
+# that fetch RPMs. It combines the commit AND every tag pointing at HEAD, so
+# tagging an already-built commit (or adding another tag) forces a rebuild
+# that picks up newer packages. Unlike VERSION, it is never either/or.
+CACHE_KEY = $(shell git rev-parse --short HEAD)-$(shell git tag -l --contains HEAD | paste -sd, -)
+
 RUNNER := docker
 IMAGE_BUILDER := $(RUNNER) buildx
 MACHINE := rancher
