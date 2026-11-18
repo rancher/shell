@@ -26,13 +26,13 @@ test-build:
 build-image: buildx-machine ## build (and load) the container image targeting the current platform.
 	$(IMAGE_BUILDER) build -f Dockerfile \
 		--builder $(MACHINE) $(IMAGE_ARGS) \
-		--build-arg VERSION=$(VERSION) -t "$(IMAGE)" $(BUILD_ACTION) .
+		--build-arg VERSION=$(VERSION) --build-arg CACHE_KEY=$(CACHE_KEY) -t "$(IMAGE)" $(BUILD_ACTION) .
 	@echo "Built $(IMAGE)"
 
 push-image: buildx-machine ## build the container image targeting all platforms defined by TARGET_PLATFORMS and push to a registry.
 	$(IMAGE_BUILDER) build -f Dockerfile \
 		--builder $(MACHINE) $(IMAGE_ARGS) $(IID_FILE_FLAG) $(BUILDX_ARGS) \
-		--build-arg VERSION=$(VERSION) --platform=$(TARGET_PLATFORMS) -t "$(IMAGE)" --push .
+		--build-arg VERSION=$(VERSION) --build-arg CACHE_KEY=$(CACHE_KEY) --platform=$(TARGET_PLATFORMS) -t "$(IMAGE)" --push .
 	@echo "Pushed $(IMAGE)"
 
 validate: validate-dirty ## Run validation checks.
